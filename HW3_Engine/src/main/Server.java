@@ -13,8 +13,8 @@ public class Server extends PApplet {
     Rectangle            c;
     Rectangle            ob;
     PVector              pos;
-    float                velx;
-    float                vely;
+    // float velx;
+    // float vely;
     float                rVelx;
     float                rVely;
     double               gravity;
@@ -48,8 +48,8 @@ public class Server extends PApplet {
     @Override
     public void setup () {
         pos = new PVector( width / 2 + 40, height / 2 - 100 );
-        vely = 3;
-        velx = 0;
+        // vely = 3;
+        // velx = 0;
         rVely = 0;
         rVelx = 0;
         re = false;
@@ -77,6 +77,8 @@ public class Server extends PApplet {
         ob = new Rectangle( 30, 800, 100, 100 );
         g = new Rectangle( 0, 890, 1300, 10 );
         player = new Player( 01, x1, y1, 32, 32, 255, 0, 0 );
+        player.setVelx( 0 );
+        player.setVely( 3 );
         // fill( 120, 50, 240 );
     }
 
@@ -84,14 +86,14 @@ public class Server extends PApplet {
     public void draw () {
         background( 51 );
         if ( re ) {
-            velx = 0;
+            player.velx = 0;
         }
         re = false;
         collidingP = false;
-        vely += gravity;
-        player.player.y += vely;
-        if ( vely > 5 ) {
-            vely = 5;
+        player.vely += gravity;
+        player.player.y += player.vely;
+        if ( player.vely > 5 ) {
+            player.vely = 5;
         }
         if ( g.intersects( player.player ) ) {
             collidingP = true;
@@ -100,11 +102,11 @@ public class Server extends PApplet {
         if ( player.player.intersects( ob ) ) {
             if ( player.player.y > ob.y ) {
                 if ( player.player.y > ob.y && player.player.y < ob.y + 100 ) {
-                    velx *= -1;
+                    player.velx *= -1;
                 }
                 else {
-                    vely *= -1;
-                    velx *= -1;
+                    player.vely *= -1;
+                    player.velx *= -1;
                 }
                 re = true;
 
@@ -112,7 +114,7 @@ public class Server extends PApplet {
             else {
                 collidingP = true;
                 player.player.y = ob.y - 32;
-                vely = 0;
+                player.vely = 0;
             }
         }
         fill( 0, 0, 0 );
@@ -122,7 +124,7 @@ public class Server extends PApplet {
         stroke( 0 );
         fill( 255, 0, 0 );
         player.render( this );
-        player.player.x += velx;
+        player.player.x += player.velx;
         if ( player.player.x > width ) {
             player.player.x = -31;
         }
@@ -130,31 +132,31 @@ public class Server extends PApplet {
             player.player.x = width - 1;
         }
         if ( collidingP && jump != false ) {
-            vely = -10;
+            player.vely = -10;
         }
 
         for ( int i = 0; i < rect.size(); i++ ) {
             final Rectangle r = rect.get( i );
             if ( r.intersects( player.player ) ) {
-                if ( velxs[i] < 0 && velx < 0 ) {
-                    velxs[i] += velx;
+                if ( velxs[i] < 0 && player.velx < 0 ) {
+                    velxs[i] += player.velx;
                 }
-                else if ( velxs[i] > 0 && velx > 0 ) {
-                    velxs[i] += velx;
+                else if ( velxs[i] > 0 && player.velx > 0 ) {
+                    velxs[i] += player.velx;
                 }
                 else {
                     velxs[i] *= -1;
-                    velxs[i] += velx;
+                    velxs[i] += player.velx;
                 }
-                if ( velys[i] < 0 && vely < 0 ) {
-                    velys[i] += vely;
+                if ( velys[i] < 0 && player.vely < 0 ) {
+                    velys[i] += player.vely;
                 }
-                else if ( velys[i] > 0 && vely > 0 ) {
-                    velys[i] += vely;
+                else if ( velys[i] > 0 && player.vely > 0 ) {
+                    velys[i] += player.vely;
                 }
                 else {
                     velys[i] *= -1;
-                    velys[i] += vely;
+                    velys[i] += player.vely;
                 }
 
                 // rVely *= -1;
@@ -226,13 +228,13 @@ public class Server extends PApplet {
     public void keyPressed () {
         if ( key == 'a' ) {
             if ( !re ) {
-                velx = -walk;
+                player.velx = -walk;
                 walking = true;
             }
 
         }
         if ( key == 'd' ) {
-            velx = walk;
+            player.velx = walk;
             walking = true;
         }
         if ( key == ' ' ) {
@@ -245,11 +247,11 @@ public class Server extends PApplet {
     @Override
     public void keyReleased () {
         if ( key == 'a' ) {
-            velx = 0;
+            player.velx = 0;
             walking = false;
         }
         if ( key == 'd' ) {
-            velx = 0;
+            player.velx = 0;
             walking = false;
         }
         if ( key == ' ' ) {

@@ -12,9 +12,9 @@ public class Player extends GameObject implements Renderable {
 
     public int       height;
 
-    public int       velx;
+    public float     velx;
 
-    public int       vely;
+    public float     vely;
 
     public PApplet   parent;
 
@@ -41,6 +41,14 @@ public class Player extends GameObject implements Renderable {
         parent.fill( r, g, b );
         parent.rect( player.x, player.y, width, height );
 
+    }
+
+    public void setVelx ( final float velx ) {
+        this.velx = velx;
+    }
+
+    public void setVely ( final float vely ) {
+        this.vely = vely;
     }
 
 }
