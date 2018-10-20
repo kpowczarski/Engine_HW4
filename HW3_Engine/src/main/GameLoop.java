@@ -3,40 +3,41 @@ package main;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
+import objects.GameObject;
+import objects.Ground;
+import objects.Platform;
 import objects.Player;
 import processing.core.PApplet;
-import processing.core.PVector;
 
-public class Server extends PApplet {
+public class GameLoop extends PApplet {
 
-    Rectangle            g;
-    Rectangle            c;
-    Rectangle            ob;
-    PVector              pos;
+    public static Ground                g;
+    Rectangle                           c;
+    public static ArrayList<GameObject> gameobjs = new ArrayList<GameObject>();
+    // Rectangle ob;
     // float velx;
     // float vely;
-    float                rVelx;
-    float                rVely;
-    double               gravity;
-    boolean              justCol    = false;
-    float                moving     = 0;
-    float                walk       = 5;
-    boolean              collidingP = false;
-    boolean              walking    = false;
-    int                  x1         = 30;
-    int                  y1         = 840;
-    boolean              jump;
-    boolean              re;
-    float                rC;
-    float                gC;
-    float                bC;
-    ArrayList<Rectangle> rect       = new ArrayList<Rectangle>();
-    float                velxs[];
-    float                velys[];
-    Player               player;
+    float                               rVelx;
+    float                               rVely;
+    public static double                gravity  = .5;
+    boolean                             justCol  = false;
+    float                               moving   = 0;
+    float                               walk     = 5;
+    // boolean collidingP = false;
+    boolean                             walking  = false;
+    boolean                             jump;
+    boolean                             re;
+    float                               rC;
+    float                               gC;
+    float                               bC;
+    ArrayList<Rectangle>                rect     = new ArrayList<Rectangle>();
+    float                               velxs[];
+    float                               velys[];
+    Player                              player;
+    Platform                            plat1;
 
     public static void main ( final String[] args ) {
-        PApplet.main( "main.Server" );
+        PApplet.main( "main.GameLoop" );
 
     }
 
@@ -47,7 +48,6 @@ public class Server extends PApplet {
 
     @Override
     public void setup () {
-        pos = new PVector( width / 2 + 40, height / 2 - 100 );
         // vely = 3;
         // velx = 0;
         rVely = 0;
@@ -62,7 +62,6 @@ public class Server extends PApplet {
             velxs[i] = random( -5, 5 );
             velys[i] = random( -5, 5 );
         }
-        gravity = 0.5;
         rect.add( new Rectangle( 60, 800, 32, 32 ) );
         rect.add( new Rectangle( 160, 800, 32, 32 ) );
         rect.add( new Rectangle( 260, 800, 32, 32 ) );
@@ -72,72 +71,76 @@ public class Server extends PApplet {
         rect.add( new Rectangle( 1160, 800, 32, 32 ) );
         c = new Rectangle( 0, 0, 1300, 10 );
         // rect.add( new Rectangle( 0, 890, 900, 10) );
-        x1 = (int) pos.x;
-        y1 = (int) pos.y;
-        ob = new Rectangle( 30, 800, 100, 100 );
-        g = new Rectangle( 0, 890, 1300, 10 );
-        player = new Player( 01, x1, y1, 32, 32, 255, 0, 0 );
+        // ob = new Rectangle( 30, 770, 100, 40 );
+        g = new Ground( 00 );
+        player = new Player( 01, width / 2, height / 2, 32, 32, 255, 0, 0 );
+        plat1 = new Platform( 02, false, 30, 10, 100, 32, 255, 255, 0 );
         player.setVelx( 0 );
         player.setVely( 3 );
+        gameobjs.add( player );
+        gameobjs.add( g );
+        gameobjs.add( plat1 );
         // fill( 120, 50, 240 );
     }
 
     @Override
     public void draw () {
         background( 51 );
+        if ( player.rect.x > width ) {
+            player.rect.x = -31;
+        }
+        if ( player.rect.x < -32 ) {
+            player.rect.x = width - 1;
+        }
+        if ( player.isColliding && jump != false ) {
+            player.vely = -10;
+        }
+        plat1.render( this );
         if ( re ) {
             player.velx = 0;
         }
         re = false;
-        collidingP = false;
+        // collidingP = false;
         player.vely += gravity;
-        player.player.y += player.vely;
+        player.rect.y += player.vely;
         if ( player.vely > 5 ) {
             player.vely = 5;
         }
-        if ( g.intersects( player.player ) ) {
-            collidingP = true;
-            player.player.y = g.y - 32;
-        }
-        if ( player.player.intersects( ob ) ) {
-            if ( player.player.y > ob.y ) {
-                if ( player.player.y > ob.y && player.player.y < ob.y + 100 ) {
-                    player.velx *= -1;
-                }
-                else {
-                    player.vely *= -1;
-                    player.velx *= -1;
-                }
-                re = true;
-
-            }
-            else {
-                collidingP = true;
-                player.player.y = ob.y - 32;
-                player.vely = 0;
-            }
-        }
+        plat1.update( this );
+        player.update( this );
+        // if ( g.ground.intersects( player.player ) ) {
+        // collidingP = true;
+        // player.player.y = g.y - 32;
+        // }
+        // if ( player.rect.intersects( ob ) ) {
+        // if ( player.rect.y > ob.y ) {
+        // if ( player.rect.y > ob.y && player.rect.y < ob.y + 100 ) {
+        // player.velx *= -1;
+        // }
+        // else {
+        // player.vely *= -1;
+        // player.velx *= -1;
+        // }
+        // re = true;
+        //
+        // }
+        // else {
+        // player.isColliding = true;
+        // player.rect.y = ob.y - 32;
+        // player.vely = 0;
+        // }
+        // }
         fill( 0, 0, 0 );
-        rect( ob.x, ob.y, 100, 100 );
-        rect( g.x, g.y, 1300, 10 );
+        // rect( ob.x, ob.y, 100, 40 );
+        g.render( this );
         rect( c.x, c.y, 1300, 10 );
         stroke( 0 );
         fill( 255, 0, 0 );
-        player.render( this );
-        player.player.x += player.velx;
-        if ( player.player.x > width ) {
-            player.player.x = -31;
-        }
-        if ( player.player.x < -32 ) {
-            player.player.x = width - 1;
-        }
-        if ( collidingP && jump != false ) {
-            player.vely = -10;
-        }
+        player.rect.x += player.velx;
 
         for ( int i = 0; i < rect.size(); i++ ) {
             final Rectangle r = rect.get( i );
-            if ( r.intersects( player.player ) ) {
+            if ( r.intersects( player.rect ) ) {
                 if ( velxs[i] < 0 && player.velx < 0 ) {
                     velxs[i] += player.velx;
                 }
@@ -205,7 +208,7 @@ public class Server extends PApplet {
                 velys[i] += 1;
             }
             r.y += velys[i];
-            if ( g.intersects( r ) ) {
+            if ( g.rect.intersects( r ) ) {
                 velys[i] *= -1;
             }
             if ( c.intersects( r ) ) {
@@ -238,7 +241,7 @@ public class Server extends PApplet {
             walking = true;
         }
         if ( key == ' ' ) {
-            if ( collidingP ) {
+            if ( player.isColliding ) {
                 jump = true;
             }
         }
