@@ -100,9 +100,9 @@ public class GameLoop extends PApplet {
         // if ( player.rect.x < -32 ) {
         // player.rect.x = width - 1;
         // }
-        if ( player.isColliding && jump != false ) {
-            player.vely = -10;
-        }
+        // if ( player.isColliding && jump != false ) {
+        // player.vely = -10;
+        // }
         plat1.render( this );
         plat2.render( this );
         plat3.render( this );
@@ -254,7 +254,7 @@ public class GameLoop extends PApplet {
         }
         if ( key == ' ' ) {
             if ( player.isColliding ) {
-                jump = true;
+                player.jump = true;
             }
         }
     }
@@ -270,7 +270,7 @@ public class GameLoop extends PApplet {
             walking = false;
         }
         if ( key == ' ' ) {
-            jump = false;
+            player.jump = false;
         }
     }
 

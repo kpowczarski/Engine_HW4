@@ -32,6 +32,7 @@ public class Server extends PApplet implements Runnable {
     @Override
     public void setup () {
         final Ground g = new Ground( 00 );
+        game_objects = new ArrayList<GameObject>();
         game_objects.add( g );
     }
 
@@ -77,9 +78,12 @@ public class Server extends PApplet implements Runnable {
                         }
                         dout.writeObject( game_objects );
                         dout.reset();
+                        System.out.println( "Writing" );
                     }
                     catch ( final IOException e ) {
+                        // e.printStackTrace();
                         output_streams.remove( dout );
+                        System.out.println( "Disconnected" );
                     }
                 }
             }

@@ -62,6 +62,9 @@ public class Player extends GameObject implements Renderable {
         if ( this.rect.x < -32 ) {
             this.rect.x = Client.parentWidth - 1;
         }
+        if ( this.isColliding && jump != false ) {
+            this.vely = -10;
+        }
         isColliding = false;
         this.vely += gravity;
         this.rect.y += this.vely;

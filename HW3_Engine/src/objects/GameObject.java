@@ -1,24 +1,29 @@
 package objects;
 
 import java.awt.Rectangle;
+import java.io.Serializable;
 
 import main.GameLoop;
 
-public abstract class GameObject implements Renderable {
+public abstract class GameObject implements Renderable, Serializable {
 
-    public final int     GUID;
+    private static final long serialVersionUID = 1L;
 
-    public int           x, y, w, h;
+    public final int          GUID;
 
-    public float         velx;
+    public int                x, y, w, h;
 
-    public float         vely;
+    public float              velx;
 
-    public static double gravity = .5;
+    public float              vely;
 
-    public Rectangle     rect;
+    public static double      gravity          = .5;
 
-    public String        type;
+    public boolean            jump             = false;
+
+    public Rectangle          rect;
+
+    public String             type;
 
     public GameObject ( final int GUID ) {
         this.GUID = GUID;
