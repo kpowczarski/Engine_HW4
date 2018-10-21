@@ -3,21 +3,22 @@ package objects;
 import java.awt.Rectangle;
 
 import main.GameLoop;
-import processing.core.PApplet;
 
-public abstract class GameObject {
+public abstract class GameObject implements Renderable {
 
-    public final int GUID;
+    public final int     GUID;
 
-    public int       x, y, w, h;
+    public int           x, y, w, h;
 
-    public float     velx;
+    public float         velx;
 
-    public float     vely;
+    public float         vely;
 
-    public Rectangle rect;
+    public static double gravity = .5;
 
-    public String    type;
+    public Rectangle     rect;
+
+    public String        type;
 
     public GameObject ( final int GUID ) {
         this.GUID = GUID;
@@ -27,7 +28,7 @@ public abstract class GameObject {
         return this.rect;
     }
 
-    public abstract void update ( PApplet p );
+    public abstract void update ();
 
     public void handleCollision ( final GameObject o ) {
         // nothing

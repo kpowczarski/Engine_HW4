@@ -41,7 +41,7 @@ public class Ground extends GameObject implements Renderable {
     }
 
     @Override
-    public void update ( final PApplet p ) {
+    public void update () {
         // nothing
 
     }

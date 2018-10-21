@@ -35,6 +35,8 @@ public class GameLoop extends PApplet {
     float                               velys[];
     Player                              player;
     Platform                            plat1;
+    Platform                            plat2;
+    Platform                            plat3;
 
     public static void main ( final String[] args ) {
         PApplet.main( "main.GameLoop" );
@@ -74,40 +76,50 @@ public class GameLoop extends PApplet {
         // ob = new Rectangle( 30, 770, 100, 40 );
         g = new Ground( 00 );
         player = new Player( 01, width / 2, height / 2, 32, 32, 255, 0, 0 );
-        plat1 = new Platform( 02, false, 30, 10, 100, 32, 255, 255, 0 );
+        plat1 = new Platform( 02, true, 30, 800, 100, 32, 255, 255, 0 );
+        plat1.setMovingSettings( 850, 100, 0, 0, 2, 0 );
+        plat2 = new Platform( 03, true, 1000, 800, 100, 32, 126, 243, 233 );
+        plat2.setMovingSettings( 850, 100, 0, 0, 3, 0 );
+        plat3 = new Platform( 04, false, 200, 600, 100, 32, 23, 43, 244 );
         player.setVelx( 0 );
         player.setVely( 3 );
         gameobjs.add( player );
         gameobjs.add( g );
         gameobjs.add( plat1 );
+        gameobjs.add( plat2 );
+        gameobjs.add( plat3 );
         // fill( 120, 50, 240 );
     }
 
     @Override
     public void draw () {
         background( 51 );
-        if ( player.rect.x > width ) {
-            player.rect.x = -31;
-        }
-        if ( player.rect.x < -32 ) {
-            player.rect.x = width - 1;
-        }
+        // if ( player.rect.x > width ) {
+        // player.rect.x = -31;
+        // }
+        // if ( player.rect.x < -32 ) {
+        // player.rect.x = width - 1;
+        // }
         if ( player.isColliding && jump != false ) {
             player.vely = -10;
         }
         plat1.render( this );
+        plat2.render( this );
+        plat3.render( this );
         if ( re ) {
             player.velx = 0;
         }
         re = false;
         // collidingP = false;
-        player.vely += gravity;
-        player.rect.y += player.vely;
-        if ( player.vely > 5 ) {
-            player.vely = 5;
-        }
-        plat1.update( this );
-        player.update( this );
+        // player.vely += gravity;
+        // player.rect.y += player.vely;
+        // if ( player.vely > 5 ) {
+        // player.vely = 5;
+        // }
+        plat1.update();
+        plat2.update();
+        player.update();
+        player.render( this );
         // if ( g.ground.intersects( player.player ) ) {
         // collidingP = true;
         // player.player.y = g.y - 32;
@@ -136,7 +148,7 @@ public class GameLoop extends PApplet {
         rect( c.x, c.y, 1300, 10 );
         stroke( 0 );
         fill( 255, 0, 0 );
-        player.rect.x += player.velx;
+        // player.rect.x += player.velx;
 
         for ( int i = 0; i < rect.size(); i++ ) {
             final Rectangle r = rect.get( i );

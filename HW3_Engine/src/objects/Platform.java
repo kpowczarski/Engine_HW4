@@ -10,6 +10,11 @@ public class Platform extends GameObject implements Renderable {
     public int     g;
     public int     b;
 
+    public int     maxY;
+    public int     minY;
+    public int     maxX;
+    public int     minX;
+
     // public Rectangle platform;
 
     public boolean moving;
@@ -25,8 +30,19 @@ public class Platform extends GameObject implements Renderable {
         this.x = x;
         this.y = y;
         this.velx = 0;
-        this.vely = 3;
+        this.vely = 0;
         this.type = "plat";
+    }
+
+    public void setMovingSettings ( final int maxY, final int minY, final int maxX, final int minX, final float vely,
+            final float velx ) {
+        this.moving = true;
+        this.velx = velx;
+        this.vely = vely;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.minX = minX;
+        this.minY = minY;
     }
 
     @Override
@@ -39,8 +55,6 @@ public class Platform extends GameObject implements Renderable {
     public void handleCollision ( final GameObject o ) {
         if ( o.type.equals( "player" ) ) {
             final Player p = (Player) o;
-            System.out.println( p.rect.y + 31 );
-            System.out.println( this.y );
             if ( p.rect.y < this.rect.y ) {
                 p.rect.y = this.rect.y - 31;
                 p.vely = this.vely;
@@ -58,8 +72,21 @@ public class Platform extends GameObject implements Renderable {
     }
 
     @Override
-    public void update ( final PApplet p ) {
+    public void update () {
         this.rect.y += this.vely;
+        this.rect.x += this.velx;
+        if ( this.rect.x > this.maxX ) {
+            velx *= -1;
+        }
+        if ( this.rect.x < this.minY ) {
+            velx *= -1;
+        }
+        if ( this.rect.y < this.minY ) {
+            vely *= -1;
+        }
+        if ( this.rect.y > this.maxY ) {
+            vely *= -1;
+        }
 
     }
 

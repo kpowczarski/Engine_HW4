@@ -2,6 +2,7 @@ package objects;
 
 import java.awt.Rectangle;
 
+import main.Client;
 import processing.core.PApplet;
 
 public class Player extends GameObject implements Renderable {
@@ -15,8 +16,6 @@ public class Player extends GameObject implements Renderable {
     // public float velx;
 
     // public float vely;
-
-    public PApplet parent;
 
     public int     r;
     public int     g;
@@ -41,8 +40,7 @@ public class Player extends GameObject implements Renderable {
     }
 
     @Override
-    public void render ( final PApplet p ) {
-        parent = p;
+    public void render ( final PApplet parent ) {
         parent.fill( r, g, b );
         parent.rect( rect.x, rect.y, w, h );
 
@@ -57,11 +55,21 @@ public class Player extends GameObject implements Renderable {
     }
 
     @Override
-    public void update ( final PApplet p ) {
-        parent = p;
+    public void update () {
+        if ( this.rect.x > Client.parentWidth ) {
+            this.rect.x = -31;
+        }
+        if ( this.rect.x < -32 ) {
+            this.rect.x = Client.parentWidth - 1;
+        }
         isColliding = false;
+        this.vely += gravity;
+        this.rect.y += this.vely;
+        if ( this.vely > 5 ) {
+            this.vely = 5;
+        }
+        this.rect.x += this.velx;
         collides();
-        this.render( parent );
     }
 
 }
