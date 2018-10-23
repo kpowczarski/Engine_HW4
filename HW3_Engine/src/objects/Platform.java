@@ -6,22 +6,22 @@ import processing.core.PApplet;
 
 public class Platform extends GameObject implements Renderable {
 
-    public int     r;
-    public int     g;
-    public int     b;
+    private static final long serialVersionUID = 1L;
+    public int                r;
+    public int                g;
+    public int                b;
 
-    public int     maxY;
-    public int     minY;
-    public int     maxX;
-    public int     minX;
+    public int                maxY;
+    public int                minY;
+    public int                maxX;
+    public int                minX;
 
     // public Rectangle platform;
 
-    public boolean moving;
+    public boolean            moving;
 
-    public Platform ( final int GUID, final boolean moving, final int x, final int y, final int width, final int height,
-            final int r, final int g, final int b ) {
-        super( GUID );
+    public Platform ( final boolean moving, final int x, final int y, final int width, final int height, final int r,
+            final int g, final int b ) {
         this.moving = moving;
         this.r = r;
         this.g = g;
@@ -59,6 +59,9 @@ public class Platform extends GameObject implements Renderable {
                 p.rect.y = this.rect.y - 31;
                 p.vely = this.vely;
                 p.isColliding = true;
+                if ( !p.walking ) {
+                    p.velx = this.velx;
+                }
             }
             else if ( p.rect.y > this.rect.y ) {
                 p.vely = this.vely;
@@ -78,7 +81,7 @@ public class Platform extends GameObject implements Renderable {
         if ( this.rect.x > this.maxX ) {
             velx *= -1;
         }
-        if ( this.rect.x < this.minY ) {
+        if ( this.rect.x < this.minX ) {
             velx *= -1;
         }
         if ( this.rect.y < this.minY ) {

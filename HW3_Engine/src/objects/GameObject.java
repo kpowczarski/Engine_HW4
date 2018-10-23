@@ -3,13 +3,15 @@ package objects;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
-import main.GameLoop;
+import main.Server;
 
 public abstract class GameObject implements Renderable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     public final int          GUID;
+
+    public static int         GUIDcount        = 0;
 
     public int                x, y, w, h;
 
@@ -25,15 +27,18 @@ public abstract class GameObject implements Renderable, Serializable {
 
     public String             type;
 
-    public GameObject ( final int GUID ) {
-        this.GUID = GUID;
+    public GameObject () {
+        this.GUID = GUIDcount;
+        GUIDcount++;
     }
 
     public Rectangle getRect () {
         return this.rect;
     }
 
-    public abstract void update ();
+    public void update () {
+        // nothing
+    }
 
     public void handleCollision ( final GameObject o ) {
         // nothing
@@ -45,8 +50,8 @@ public abstract class GameObject implements Renderable, Serializable {
         // p.player.y = GameLoop.g.ground.y - 32;
         // return true;
         // }
-        for ( int i = 0; i < GameLoop.gameobjs.size(); i++ ) {
-            final GameObject go = GameLoop.gameobjs.get( i );
+        for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+            final GameObject go = Server.game_objects.get( i );
             if ( go.GUID != this.GUID ) {
                 if ( this.rect.intersects( go.getRect() ) ) {
                     go.handleCollision( this );
@@ -55,6 +60,11 @@ public abstract class GameObject implements Renderable, Serializable {
             }
         }
         return false;
+
+    }
+
+    public void handleMovement ( int f, int anti ) {
+        // nothing if not player
 
     }
 

@@ -2,7 +2,6 @@ package objects;
 
 import java.awt.Rectangle;
 
-import main.GameLoop;
 import processing.core.PApplet;
 
 public class Ground extends GameObject implements Renderable {
@@ -17,12 +16,13 @@ public class Ground extends GameObject implements Renderable {
 
     // public Rectangle ground;
 
-    public Ground ( final int GUID ) {
-        super( GUID );
+    private static final long serialVersionUID = 1L;
+
+    public Ground () {
         this.x = 0;
-        this.y = 890;
-        this.w = 1300;
-        this.h = 10;
+        this.y = 870;
+        this.w = 300;
+        this.h = 100;
         this.rect = new Rectangle( x, y, w, h );
         this.type = "g";
     }
@@ -37,7 +37,7 @@ public class Ground extends GameObject implements Renderable {
     public void handleCollision ( final GameObject o ) {
         final Player p = (Player) o;
         p.isColliding = true;
-        p.rect.y = GameLoop.g.rect.y - 32;
+        p.rect.y = this.rect.y - 32;
     }
 
     @Override

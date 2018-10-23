@@ -1,6 +1,7 @@
 package objects;
 
 import java.awt.Rectangle;
+import java.util.ArrayList;
 
 import main.Client;
 import processing.core.PApplet;
@@ -17,17 +18,19 @@ public class Player extends GameObject implements Renderable {
 
     // public float vely;
 
-    public int     r;
-    public int     g;
-    public int     b;
+    public ArrayList<Spawnpoint> spawnlist;
 
-    public boolean isColliding;
+    private static final long    serialVersionUID = 1L;
+    public int                   r;
+    public int                   g;
+    public int                   b;
 
-    public Player ( final int GUID, final int x, final int y, final int width, final int height, final int r,
-            final int g, final int b ) {
-        super( GUID );
+    public boolean               walking;
 
-        this.rect = new Rectangle( x, y, width, height );
+    public boolean               isColliding;
+
+    public Player ( final int width, final int height, final int r, final int g, final int b ) {
+
         this.velx = 0;
         this.vely = 3;
         this.r = r;
@@ -36,7 +39,17 @@ public class Player extends GameObject implements Renderable {
         this.w = width;
         this.h = height;
         isColliding = false;
+        walking = false;
         this.type = "player";
+        spawnlist = new ArrayList<Spawnpoint>();
+        Spawnpoint s1 = new Spawnpoint( 10, 838 );
+        spawnlist.add( s1 );
+        Spawnpoint s2 = new Spawnpoint( 110, 838 );
+        spawnlist.add( s2 );
+        Spawnpoint s3 = new Spawnpoint( 210, 838 );
+        spawnlist.add( s3 );
+        Spawnpoint cur = spawnlist.get( this.GUID % 3 );
+        this.rect = new Rectangle( cur.x, cur.y, width, height );
     }
 
     @Override
@@ -73,6 +86,36 @@ public class Player extends GameObject implements Renderable {
         }
         this.rect.x += this.velx;
         collides();
+    }
+
+    @Override
+    public void handleMovement ( int move, int anti ) {
+        if ( move != 0 ) {
+            if ( move == 1 ) {
+                this.velx = -3;
+                walking = true;
+            }
+            else if ( move == 2 ) {
+                this.velx = 3;
+                walking = true;
+            }
+            else if ( move == 3 ) {
+                jump = true;
+            }
+        }
+        if ( anti != 0 ) {
+            if ( anti == 1 ) {
+                this.velx = 0;
+                walking = false;
+            }
+            else if ( anti == 2 ) {
+                this.velx = 0;
+                walking = false;
+            }
+            else if ( anti == 3 ) {
+                jump = false;
+            }
+        }
     }
 
 }

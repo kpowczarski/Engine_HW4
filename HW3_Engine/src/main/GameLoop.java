@@ -74,13 +74,13 @@ public class GameLoop extends PApplet {
         c = new Rectangle( 0, 0, 1300, 10 );
         // rect.add( new Rectangle( 0, 890, 900, 10) );
         // ob = new Rectangle( 30, 770, 100, 40 );
-        g = new Ground( 00 );
-        player = new Player( 01, width / 2, height / 2, 32, 32, 255, 0, 0 );
-        plat1 = new Platform( 02, true, 30, 800, 100, 32, 255, 255, 0 );
+        g = new Ground();
+        player = new Player( 32, 32, 255, 0, 0 );
+        plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
         plat1.setMovingSettings( 850, 100, 0, 0, 2, 0 );
-        plat2 = new Platform( 03, true, 1000, 800, 100, 32, 126, 243, 233 );
+        plat2 = new Platform( true, 1000, 800, 100, 32, 126, 243, 233 );
         plat2.setMovingSettings( 850, 100, 0, 0, 3, 0 );
-        plat3 = new Platform( 04, false, 200, 600, 100, 32, 23, 43, 244 );
+        plat3 = new Platform( false, 200, 600, 100, 32, 23, 43, 244 );
         player.setVelx( 0 );
         player.setVely( 3 );
         gameobjs.add( player );
