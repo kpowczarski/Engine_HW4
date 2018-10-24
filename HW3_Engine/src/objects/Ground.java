@@ -3,7 +3,12 @@ package objects;
 import java.awt.Rectangle;
 
 import processing.core.PApplet;
-
+/**
+ * 
+ * @author Kevin Owczarski
+ * Hard coded ground object for the game
+ *
+ */
 public class Ground extends GameObject implements Renderable {
 
     // public int x;

@@ -5,7 +5,12 @@ import java.util.ArrayList;
 
 import main.Client;
 import processing.core.PApplet;
-
+/**
+ * 
+ * @author Kevin Owczarski 
+ * Player object that contains all variables associated with every client's player character
+ *
+ */
 public class Player extends GameObject implements Renderable {
 
     // public Rectangle player;

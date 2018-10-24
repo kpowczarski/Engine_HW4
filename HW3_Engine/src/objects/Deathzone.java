@@ -3,7 +3,12 @@ package objects;
 import java.awt.Rectangle;
 
 import processing.core.PApplet;
-
+/**
+ * 
+ * @author Kevin Owczarski
+ * Encompasses deathzone object's variables
+ *
+ */
 public class Deathzone extends GameObject {
 
     private static final long serialVersionUID = 1L;

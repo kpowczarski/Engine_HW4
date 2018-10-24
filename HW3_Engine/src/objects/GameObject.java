@@ -4,7 +4,12 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 
 import main.Server;
-
+/**
+ * 
+ * @author Kevin Owczarski
+ * Abstract Game object that is inherited by all objects
+ *
+ */
 public abstract class GameObject implements Renderable, Serializable {
 
     private static final long serialVersionUID = 1L;

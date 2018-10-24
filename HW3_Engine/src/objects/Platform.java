@@ -3,7 +3,12 @@ package objects;
 import java.awt.Rectangle;
 
 import processing.core.PApplet;
-
+/**
+ * 
+ * @author Kevin Owczarski
+ * Platform object that can be moving or static
+ *
+ */
 public class Platform extends GameObject implements Renderable {
 
     private static final long serialVersionUID = 1L;

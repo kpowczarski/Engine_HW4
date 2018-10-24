@@ -14,8 +14,12 @@ import objects.ObjectInputStreamId;
 import objects.Platform;
 import objects.Player;
 import processing.core.PApplet;
-
-// Code taken from class moodle page
+/**
+ * 
+ * @author Kevin Owczarski
+ * Inspired by project 1
+ *
+ */
 public class Server extends PApplet implements Runnable {
 
     private static CopyOnWriteArrayList<ObjectInputStreamId> input_streams;

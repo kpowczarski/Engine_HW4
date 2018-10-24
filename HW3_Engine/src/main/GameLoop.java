@@ -8,7 +8,11 @@ import objects.Ground;
 import objects.Platform;
 import objects.Player;
 import processing.core.PApplet;
-
+/**
+ * 
+ * @author Kevin Owczarski
+ *
+ */
 public class GameLoop extends PApplet {
 
     public static Ground                g;

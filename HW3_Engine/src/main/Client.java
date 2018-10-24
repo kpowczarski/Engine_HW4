@@ -9,7 +9,12 @@ import objects.GameObject;
 import objects.ObjectOutputStreamId;
 import processing.core.PApplet;
 
-// Code taken from class moodle page
+/**
+ * 
+ * @author Kevin Owczarski
+ * Inspired by project 1
+ *
+ */
 public class Client extends PApplet {
 
     private static ObjectInputStream     input_stream;
