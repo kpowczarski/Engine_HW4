@@ -38,9 +38,10 @@ public class Client extends PApplet {
                 input_stream.close();
                 output_stream.close();
                 s.close();
+                return;
             }
             catch ( final IOException c ) {
-                // nothing
+                return;
             }
         }
     }
@@ -75,9 +76,10 @@ public class Client extends PApplet {
                 input_stream.close();
                 output_stream.close();
                 s.close();
+                exit();
             }
             catch ( final IOException c ) {
-                c.printStackTrace();
+                exit();
             }
         }
         try {
@@ -88,9 +90,10 @@ public class Client extends PApplet {
                 input_stream.close();
                 output_stream.close();
                 s.close();
+                exit();
             }
             catch ( final IOException c ) {
-                c.printStackTrace();
+                exit();
             }
         }
         for ( int i = 0; i < game_objects.size(); i++ ) {

@@ -28,12 +28,28 @@ public class Server extends PApplet implements Runnable {
     }
 
     @Override
-    public void settings () {
-        size( Client.parentWidth, Client.parentHeight );
+    public void run () {
+        try {
+            while ( true ) {
+                System.out.println( "About to accept..." );
+                final Socket s = ss.accept();
+                System.out.println( "New connection Established" );
+                synchronized ( this ) {
+                    final Player newPlayer = new Player( 32, 32, 255, 0, 0 );
+                    output_streams.add( new ObjectOutputStream( s.getOutputStream() ) );
+                    input_streams.add( new ObjectInputStreamId( s.getInputStream(), newPlayer.GUID ) );
+                    game_objects.add( newPlayer );
+                }
+                System.out.println( "Streams successfully added." );
+            }
+        }
+        catch ( final IOException iox ) {
+            iox.printStackTrace();
+        }
     }
 
-    @Override
-    public void setup () {
+    public static void main ( final String[] args ) {
+        // PApplet.main( "main.Server" );
         final Ground g = new Ground();
         final Platform plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
         plat1.setMovingSettings( 800, 100, 0, 0, 2, 0 );
@@ -57,31 +73,6 @@ public class Server extends PApplet implements Runnable {
         game_objects.add( plat6 );
         game_objects.add( plat7 );
         game_objects.add( d );
-    }
-
-    @Override
-    public void run () {
-        try {
-            while ( true ) {
-                System.out.println( "About to accept..." );
-                final Socket s = ss.accept();
-                System.out.println( "New connection Established" );
-                synchronized ( this ) {
-                    final Player newPlayer = new Player( 32, 32, 255, 0, 0 );
-                    output_streams.add( new ObjectOutputStream( s.getOutputStream() ) );
-                    input_streams.add( new ObjectInputStreamId( s.getInputStream(), newPlayer.GUID ) );
-                    game_objects.add( newPlayer );
-                }
-                System.out.println( "Streams successfully added." );
-            }
-        }
-        catch ( final IOException iox ) {
-            iox.printStackTrace();
-        }
-    }
-
-    public static void main ( final String[] args ) {
-        PApplet.main( "main.Server" );
         try {
             ss = new ServerSocket( 5422 );
         }
@@ -112,7 +103,7 @@ public class Server extends PApplet implements Runnable {
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
                                 game_objects.remove( i );
-                                System.out.println( "Player" + din.getId() + "disconnected" );
+                                System.out.println( "Player Id " + din.getId() + " disconnected" );
                             }
                         }
                         input_streams.remove( din );
