@@ -13,11 +13,12 @@ import objects.Ground;
 import objects.ObjectInputStreamId;
 import objects.Platform;
 import objects.Player;
+import objects.Timeline;
 import processing.core.PApplet;
+
 /**
- * 
- * @author Kevin Owczarski
- * Inspired by project 1
+ *
+ * @author Kevin Owczarski Inspired by project 1
  *
  */
 public class Server extends PApplet implements Runnable {
@@ -88,13 +89,20 @@ public class Server extends PApplet implements Runnable {
 
         final Server server = new Server();
         ( new Thread( server ) ).start();
-
+        Timeline t = new Timeline( 60 );
         while ( true ) {
             synchronized ( server ) {
                 for ( final ObjectInputStreamId din : input_streams ) {
                     try {
                         int f = din.readInt();
                         int anti = din.readInt();
+                        int pause = din.readInt();
+                        if ( pause == 1 ) {
+                            t.pause();
+                        }
+                        if ( pause == 0 ) {
+                            t.unpause();
+                        }
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
                                 game_objects.get( i ).handleMovement( f, anti );
@@ -125,6 +133,7 @@ public class Server extends PApplet implements Runnable {
                 for ( final ObjectOutputStream dout : output_streams ) {
                     try {
                         dout.writeObject( game_objects );
+                        dout.writeObject( t );
                         dout.reset();
                     }
                     catch ( final IOException e ) {

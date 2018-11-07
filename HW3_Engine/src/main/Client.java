@@ -7,12 +7,12 @@ import java.util.ArrayList;
 
 import objects.GameObject;
 import objects.ObjectOutputStreamId;
+import objects.Timeline;
 import processing.core.PApplet;
 
 /**
- * 
- * @author Kevin Owczarski
- * Inspired by project 1
+ *
+ * @author Kevin Owczarski Inspired by project 1
  *
  */
 public class Client extends PApplet {
@@ -20,12 +20,14 @@ public class Client extends PApplet {
     private static ObjectInputStream     input_stream;
     private static ObjectOutputStreamId  output_stream;
     private static ArrayList<GameObject> game_objects;
+    private static Timeline              time;
     private static Socket                s;
     public static int                    parentHeight = 900;
     public static int                    parentWidth  = 1300;
     public static int                    id;
     public int                           move;
     public int                           anti;
+    public int                           pause;
 
     public static void main ( final String[] args ) {
         try {
@@ -61,6 +63,7 @@ public class Client extends PApplet {
         game_objects = new ArrayList<GameObject>();
         move = 0;
         anti = 0;
+        pause = 0;
     }
 
     @SuppressWarnings ( "unchecked" )
@@ -72,6 +75,7 @@ public class Client extends PApplet {
             // output_stream.writeInt( key );
             output_stream.writeInt( move );
             output_stream.writeInt( anti );
+            output_stream.writeInt( pause );
             move = 0;
             anti = 0;
             output_stream.reset();
@@ -89,6 +93,7 @@ public class Client extends PApplet {
         }
         try {
             game_objects = (ArrayList<GameObject>) input_stream.readObject();
+            time = (Timeline) input_stream.readObject();
         }
         catch ( final IOException | ClassNotFoundException e ) {
             try {
@@ -104,6 +109,7 @@ public class Client extends PApplet {
         for ( int i = 0; i < game_objects.size(); i++ ) {
             game_objects.get( i ).render( this );
         }
+        time.render( this );
         // output_stream.writeInt( id );
         // output_stream.writeInt( iter );
         // ++iter;
@@ -148,6 +154,12 @@ public class Client extends PApplet {
         }
         else if ( key == ' ' ) {
             move = 3;
+        }
+        else if ( key == 'p' ) {
+            pause = 1;
+        }
+        else if ( key == 'u' ) {
+            pause = 0;
         }
     }
 
