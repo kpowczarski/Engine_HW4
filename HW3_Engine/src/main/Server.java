@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import objects.Deathzone;
+import objects.EventManager;
 import objects.GameObject;
 import objects.Ground;
 import objects.ObjectInputStreamId;
@@ -26,7 +27,8 @@ public class Server extends PApplet implements Runnable {
     private static CopyOnWriteArrayList<ObjectInputStreamId> input_streams;
     private static CopyOnWriteArrayList<ObjectOutputStream>  output_streams;
     public static ArrayList<GameObject>                      game_objects;
-
+    public static EventManager eventM;
+    public static Timeline time;
     private static ServerSocket                              ss;
 
     public Server () {
@@ -78,6 +80,7 @@ public class Server extends PApplet implements Runnable {
         game_objects.add( plat6 );
         game_objects.add( plat7 );
         game_objects.add( d );
+        eventM = new EventManager(game_objects);
         try {
             ss = new ServerSocket( 5422 );
         }
@@ -89,8 +92,8 @@ public class Server extends PApplet implements Runnable {
 
         final Server server = new Server();
         ( new Thread( server ) ).start();
-        Timeline t = new Timeline( 15 );
-        long currentT1 = t.getCurrentTime();
+        time = new Timeline( 15 );
+        long currentT1 = time.getCurrentTime();
         while ( true ) {
             synchronized ( server ) {
                 for ( final ObjectInputStreamId din : input_streams ) {
@@ -100,19 +103,19 @@ public class Server extends PApplet implements Runnable {
                         int pause = din.readInt();
                         int speed = din.readInt();
                         if ( pause == 1 ) {
-                            t.pause();
+                            time.pause();
                         }
                         if ( pause == 0 ) {
-                            t.unpause();
+                            time.unpause();
                         }
                         if ( speed == 2 ) {
-                            t.doubleTime();
+                            time.doubleTime();
                         }
                         if ( speed == 0 ) {
-                            t.halfTime();
+                            time.halfTime();
                         }
                         if ( speed == 1 ) {
-                            t.normalTime();
+                            time.normalTime();
                         }
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
@@ -134,12 +137,13 @@ public class Server extends PApplet implements Runnable {
                 }
             }
             synchronized ( server ) {
-                if ( currentT1 != t.getCurrentTime() ) {
-                    currentT1 = t.getCurrentTime();
+                if ( currentT1 != time.getCurrentTime() ) {
+                    currentT1 = time.getCurrentTime();
                     if ( input_streams.size() >= 1 ) {
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             game_objects.get( i ).update();
                         }
+                        eventM.handleEventsNow(currentT1);
                     }
                 }
             }
@@ -147,7 +151,7 @@ public class Server extends PApplet implements Runnable {
                 for ( final ObjectOutputStream dout : output_streams ) {
                     try {
                         dout.writeObject( game_objects );
-                        dout.writeObject( t );
+                        dout.writeObject( time );
                         dout.reset();
                     }
                     catch ( final IOException e ) {

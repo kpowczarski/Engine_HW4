@@ -122,5 +122,11 @@ public class Player extends GameObject implements Renderable {
             }
         }
     }
+    
+    public void handleDeathEvent() {
+    	Spawnpoint s = spawnlist.get( GUID % 3 );
+    	this.rect.x = s.x;
+    	this.rect.y = s.y;
+    }
 
 }

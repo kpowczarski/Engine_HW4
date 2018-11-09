@@ -2,6 +2,7 @@ package objects;
 
 import java.awt.Rectangle;
 
+import main.Server;
 import processing.core.PApplet;
 /**
  * 
@@ -29,12 +30,14 @@ public class Deathzone extends GameObject {
 
     @Override
     public void handleCollision ( GameObject o ) {
-        if ( o.type.equals( "player" ) ) {
-            Player p = (Player) o;
-            Spawnpoint s = p.spawnlist.get( p.GUID % 3 );
-            p.rect.x = s.x;
-            p.rect.y = s.y;
-        }
+    	Event e = new Event(Events.DEATH, o, Server.time.getCurrentTime());
+    	Server.eventM.addEvent(e);
+//        if ( o.type.equals( "player" ) ) {
+//            Player p = (Player) o;
+//            Spawnpoint s = p.spawnlist.get( p.GUID % 3 );
+//            p.rect.x = s.x;
+//            p.rect.y = s.y;
+//        }
     }
 
 }
