@@ -10,4 +10,8 @@ public interface TimelineI {
 
     public void start ();
 
+    public void doubleTime ();
+
+    public void halfTime ();
+
 }

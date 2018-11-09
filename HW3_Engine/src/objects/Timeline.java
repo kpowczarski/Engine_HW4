@@ -22,11 +22,20 @@ public class Timeline implements TimelineI, Serializable, Renderable {
 
     public boolean            anchorTime;
 
+    public int                doubleTime;
+
+    public int                halfTime;
+
+    public int                normalTime;
+
     public Timeline ( int ticsize ) {
         tic = ticsize;
         paused = false;
         pausedTime = 0;
         anchorTime = false;
+        doubleTime = ticsize / 2;
+        halfTime = ticsize * 2;
+        normalTime = ticsize;
         start();
     }
 
@@ -36,6 +45,8 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         pausedTime = 0;
         optionalAnchor = t;
         anchorTime = true;
+        doubleTime = tic / 2;
+        halfTime = tic * 2;
         start();
     }
 
@@ -84,6 +95,26 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         p.textSize( 20 );
         p.text( "Time: " + getCurrentTime(), 1100, 30 );
 
+    }
+
+    @Override
+    public void doubleTime () {
+        if ( this.tic != doubleTime ) {
+            this.tic = doubleTime;
+        }
+
+    }
+
+    @Override
+    public void halfTime () {
+        if ( this.tic != halfTime ) {
+            this.tic = halfTime;
+        }
+
+    }
+
+    public void normalTime () {
+        this.tic = normalTime;
     }
 
 }

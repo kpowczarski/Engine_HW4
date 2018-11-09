@@ -28,6 +28,7 @@ public class Client extends PApplet {
     public int                           move;
     public int                           anti;
     public int                           pause;
+    public int                           speed;
 
     public static void main ( final String[] args ) {
         try {
@@ -64,6 +65,7 @@ public class Client extends PApplet {
         move = 0;
         anti = 0;
         pause = 0;
+        speed = 1;
     }
 
     @SuppressWarnings ( "unchecked" )
@@ -76,6 +78,7 @@ public class Client extends PApplet {
             output_stream.writeInt( move );
             output_stream.writeInt( anti );
             output_stream.writeInt( pause );
+            output_stream.writeInt( speed );
             move = 0;
             anti = 0;
             output_stream.reset();
@@ -160,6 +163,22 @@ public class Client extends PApplet {
         }
         else if ( key == 'u' ) {
             pause = 0;
+        }
+        else if ( key == '.' ) {
+            if ( speed == 0 ) {
+                speed = 1;
+            }
+            else {
+                speed = 2;
+            }
+        }
+        else if ( key == ',' ) {
+            if ( speed == 2 ) {
+                speed = 1;
+            }
+            else {
+                speed = 0;
+            }
         }
     }
 

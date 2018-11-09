@@ -89,7 +89,8 @@ public class Server extends PApplet implements Runnable {
 
         final Server server = new Server();
         ( new Thread( server ) ).start();
-        Timeline t = new Timeline( 60 );
+        Timeline t = new Timeline( 15 );
+        long currentT1 = t.getCurrentTime();
         while ( true ) {
             synchronized ( server ) {
                 for ( final ObjectInputStreamId din : input_streams ) {
@@ -97,11 +98,21 @@ public class Server extends PApplet implements Runnable {
                         int f = din.readInt();
                         int anti = din.readInt();
                         int pause = din.readInt();
+                        int speed = din.readInt();
                         if ( pause == 1 ) {
                             t.pause();
                         }
                         if ( pause == 0 ) {
                             t.unpause();
+                        }
+                        if ( speed == 2 ) {
+                            t.doubleTime();
+                        }
+                        if ( speed == 0 ) {
+                            t.halfTime();
+                        }
+                        if ( speed == 1 ) {
+                            t.normalTime();
                         }
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
@@ -123,9 +134,12 @@ public class Server extends PApplet implements Runnable {
                 }
             }
             synchronized ( server ) {
-                if ( input_streams.size() >= 1 ) {
-                    for ( int i = 0; i < game_objects.size(); i++ ) {
-                        game_objects.get( i ).update();
+                if ( currentT1 != t.getCurrentTime() ) {
+                    currentT1 = t.getCurrentTime();
+                    if ( input_streams.size() >= 1 ) {
+                        for ( int i = 0; i < game_objects.size(); i++ ) {
+                            game_objects.get( i ).update();
+                        }
                     }
                 }
             }
