@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import objects.Deathzone;
+import objects.Event;
 import objects.EventManager;
+import objects.Events;
 import objects.GameObject;
 import objects.Ground;
 import objects.ObjectInputStreamId;
@@ -27,6 +29,7 @@ public class Server extends PApplet implements Runnable {
     private static CopyOnWriteArrayList<ObjectInputStreamId> input_streams;
     private static CopyOnWriteArrayList<ObjectOutputStream>  output_streams;
     public static ArrayList<GameObject>                      game_objects;
+    public static ArrayList<String> pause;
     public static EventManager eventM;
     public static Timeline time;
     private static ServerSocket                              ss;
@@ -43,9 +46,12 @@ public class Server extends PApplet implements Runnable {
                 System.out.println( "New connection Established" );
                 synchronized ( this ) {
                     final Player newPlayer = new Player( 32, 32, 255, 0, 0 );
+                    Event spawnE = new Event(Events.SPAWN, newPlayer, time.getCurrentTime());
+                    eventM.addEvent(spawnE);
                     output_streams.add( new ObjectOutputStream( s.getOutputStream() ) );
                     input_streams.add( new ObjectInputStreamId( s.getInputStream(), newPlayer.GUID ) );
-                    game_objects.add( newPlayer );
+                    pause.add("0");
+                    //game_objects.add( newPlayer );
                 }
                 System.out.println( "Streams successfully added." );
             }
@@ -81,6 +87,8 @@ public class Server extends PApplet implements Runnable {
         game_objects.add( plat7 );
         game_objects.add( d );
         eventM = new EventManager(game_objects);
+        time = new Timeline( 15 );
+        pause = new ArrayList<String>();
         try {
             ss = new ServerSocket( 5422 );
         }
@@ -92,21 +100,23 @@ public class Server extends PApplet implements Runnable {
 
         final Server server = new Server();
         ( new Thread( server ) ).start();
-        time = new Timeline( 15 );
         long currentT1 = time.getCurrentTime();
         while ( true ) {
             synchronized ( server ) {
+            	int index = 0;
                 for ( final ObjectInputStreamId din : input_streams ) {
                     try {
                         int f = din.readInt();
                         int anti = din.readInt();
-                        int pause = din.readInt();
+                        int temppause = din.readInt();
+                        System.out.println("TP: " + temppause);
                         int speed = din.readInt();
-                        if ( pause == 1 ) {
-                            time.pause();
+                        //System.out.println(speed);
+                        if (temppause == 1) {
+                        	pause.set(index, "1");
                         }
-                        if ( pause == 0 ) {
-                            time.unpause();
+                        if (temppause == 0) {
+                        	pause.set(index, "0");
                         }
                         if ( speed == 2 ) {
                             time.doubleTime();
@@ -134,7 +144,23 @@ public class Server extends PApplet implements Runnable {
                         }
                         input_streams.remove( din );
                     }
+                    index++;
                 }
+            }
+            boolean paused = false;
+            //boolean normal = true;
+            //boolean doubleT = false;
+            //boolean half = false;
+            for (int i = 0; i < input_streams.size(); i++ ) {
+            	if (pause.get(i).equals("1")) {
+            		paused = true;
+            	}
+            }
+            if ( !time.paused && paused ) {
+                time.pause();
+            }
+            else if ( time.paused && !paused) {
+                time.unpause();
             }
             synchronized ( server ) {
                 if ( currentT1 != time.getCurrentTime() ) {

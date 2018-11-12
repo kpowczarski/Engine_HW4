@@ -2,9 +2,11 @@ package objects;
 
 public enum Events {
 	
-	DEATH(0),
+	COLLISION(0),
 	
-	COLLISION(1)
+	DEATH(1),
+	
+	SPAWN(2)
 	
 	;
 	

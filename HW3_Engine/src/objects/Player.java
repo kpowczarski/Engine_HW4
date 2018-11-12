@@ -13,16 +13,6 @@ import processing.core.PApplet;
  */
 public class Player extends GameObject implements Renderable {
 
-    // public Rectangle player;
-
-    // public int width;
-
-    // public int height;
-
-    // public float velx;
-
-    // public float vely;
-
     public ArrayList<Spawnpoint> spawnlist;
 
     private static final long    serialVersionUID = 1L;
@@ -53,8 +43,8 @@ public class Player extends GameObject implements Renderable {
         spawnlist.add( s2 );
         Spawnpoint s3 = new Spawnpoint( 210, 838 );
         spawnlist.add( s3 );
-        Spawnpoint cur = spawnlist.get( this.GUID % 3 );
-        this.rect = new Rectangle( cur.x, cur.y, width, height );
+        //Spawnpoint cur = spawnlist.get( this.GUID % 3 );
+        this.rect = new Rectangle( 0, 0, width, height );
     }
 
     @Override
@@ -124,6 +114,12 @@ public class Player extends GameObject implements Renderable {
     }
     
     public void handleDeathEvent() {
+    	Spawnpoint s = spawnlist.get( GUID % 3 );
+    	this.rect.x = s.x;
+    	this.rect.y = s.y;
+    }
+    
+    public void handleSpawnEvent() {
     	Spawnpoint s = spawnlist.get( GUID % 3 );
     	this.rect.x = s.x;
     	this.rect.y = s.y;

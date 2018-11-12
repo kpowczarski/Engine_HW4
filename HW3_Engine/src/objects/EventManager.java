@@ -3,6 +3,8 @@ package objects;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
+import main.Server;
+
 public class EventManager {
 	
 	public PriorityQueue<Event> events;
@@ -21,11 +23,19 @@ public class EventManager {
 	
 	
 	public void handleEventsNow(long time) {
-		if (events.peek() != null && events.peek().timestamp == time) {
+		while (events.peek() != null && events.peek().timestamp <= time) {
 			Event curE = events.poll();
 			if (curE.type == Events.DEATH) {
 				Player p = (Player) curE.ob1;
 				p.handleDeathEvent();
+			}
+			else if (curE.type == Events.SPAWN) {
+				Player pS = (Player) curE.ob1;
+				pS.handleSpawnEvent();
+				Server.game_objects.add(pS);
+			}
+			else if(curE.type == Events.COLLISION) {
+				curE.ob1.handleCollision(curE.ob2);
 			}
 		}
 	}

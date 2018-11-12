@@ -59,7 +59,9 @@ public abstract class GameObject implements Renderable, Serializable {
             final GameObject go = Server.game_objects.get( i );
             if ( go.GUID != this.GUID ) {
                 if ( this.rect.intersects( go.getRect() ) ) {
-                    go.handleCollision( this );
+                    //go.handleCollision( this );
+                	Event e = new Event(Events.COLLISION, go, this, Server.time.getCurrentTime());
+                	Server.eventM.addEvent(e);
                     return true;
                 }
             }
