@@ -32,6 +32,7 @@ public class Server extends PApplet implements Runnable {
     public static ArrayList<String> pause;
     public static EventManager eventM;
     public static Timeline time;
+    public static Timeline replayTime;
     public static int recording = 0;
     private static ServerSocket                              ss;
 

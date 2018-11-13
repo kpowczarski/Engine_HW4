@@ -47,7 +47,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         anchorTime = true;
         doubleTime = tic / 2;
         halfTime = tic * 2;
-        start();
+        startA();
     }
 
     @Override
@@ -87,6 +87,10 @@ public class Timeline implements TimelineI, Serializable, Renderable {
     public void start () {
         startTime = System.currentTimeMillis();
 
+    }
+    
+    public void startA() {
+    	startTime = optionalAnchor.getCurrentTime();
     }
 
     @Override

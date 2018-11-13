@@ -14,16 +14,16 @@ public class EventManager implements Serializable {
 	
 	public PriorityQueue<Event> recordBuffer;
 	
-	public ArrayList<GameObject> objectsInitialState;
-	public ArrayList<GameObject> objectsFinalState;
+	//public ArrayList<GameObject> objectsInitialState;
+	//public ArrayList<GameObject> objectsFinalState;
 	
 	public boolean recording = false;
 	
 	public EventManager(ArrayList<GameObject> g) {
 		events = new PriorityQueue<Event>(10, new EventCompare());
 		recordBuffer = new PriorityQueue<Event>(50, new EventCompare());
-		objectsInitialState = new ArrayList<GameObject>();
-		objectsFinalState = new ArrayList<GameObject>();
+		//objectsInitialState = new ArrayList<GameObject>();
+		//objectsFinalState = new ArrayList<GameObject>();
 		recording = false;
 	}
 	
@@ -41,6 +41,7 @@ public class EventManager implements Serializable {
 		while (events.peek() != null && events.peek().timestamp <= time) {
 			Event curE = events.poll();
 			if (recording) {
+				curE.timestamp = Server.replayTime.getCurrentTime();
 				addEventToBuffer(curE);
 				System.out.println("Added Event to buffer");
 			}
@@ -61,13 +62,12 @@ public class EventManager implements Serializable {
 			}
 			else if(curE.type == Events.RECORD) {
 				recording = true;
+				Server.replayTime = new Timeline(15, Server.time);
+				curE.timestamp = Server.replayTime.getCurrentTime();
+				addEventToBuffer(curE);
 				Server.recording = 1;
 				for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-                    try {
-						objectsInitialState.add(Server.game_objects.get(i).clone());
-					} catch (CloneNotSupportedException e) {
-						e.printStackTrace();
-					}
+                    Server.game_objects.get(i).setReplay();
                 }
 			}
 		}

@@ -10,7 +10,7 @@ import main.Server;
  * Abstract Game object that is inherited by all objects
  *
  */
-public abstract class GameObject implements Renderable, Serializable, Cloneable {
+public abstract class GameObject implements Renderable, Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,6 +23,12 @@ public abstract class GameObject implements Renderable, Serializable, Cloneable 
     public float              velx;
 
     public float              vely;
+    
+    public int 				  rx, ry;
+    
+    public float 			  rvelx, rvely;
+    
+    public boolean 			  rjump = false;
 
     public static double      gravity          = .5;
 
@@ -75,11 +81,20 @@ public abstract class GameObject implements Renderable, Serializable, Cloneable 
 
     }
     
-    @Override
-    public GameObject clone() throws CloneNotSupportedException {
-    	GameObject p = (GameObject) super.clone();
-    	p.rect = (Rectangle) rect.clone();
-    	return p;
+    public void setReplay() {
+    	this.rx = this.rect.x;
+    	this.ry = this.rect.y;
+    	this.rvelx = this.velx;
+    	this.rvely = this.vely;
+    	this.rjump = this.jump;
+    }
+    
+    public void teleportStartReplay() {
+    	this.rect.x = this.rx;
+    	this.rect.y = this.ry;
+    	this.velx = this.rvelx;
+    	this.vely = this.rvely;
+    	this.jump = this.rjump;
     }
 
 }

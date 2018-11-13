@@ -9,7 +9,7 @@ import processing.core.PApplet;
  * Platform object that can be moving or static
  *
  */
-public class Platform extends GameObject implements Renderable, Cloneable {
+public class Platform extends GameObject implements Renderable {
 
     private static final long serialVersionUID = 1L;
     public int                r;
@@ -96,13 +96,6 @@ public class Platform extends GameObject implements Renderable, Cloneable {
             vely *= -1;
         }
 
-    }
-    
-    @Override
-    public GameObject clone() throws CloneNotSupportedException {
-    	Platform p = (Platform) super.clone();
-    	p.rect = (Rectangle) rect.clone();
-    	return p;
     }
 
 }
