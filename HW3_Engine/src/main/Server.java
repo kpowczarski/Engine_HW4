@@ -32,6 +32,7 @@ public class Server extends PApplet implements Runnable {
     public static ArrayList<String> pause;
     public static EventManager eventM;
     public static Timeline time;
+    public static int recording = 0;
     private static ServerSocket                              ss;
 
     public Server () {
@@ -109,9 +110,12 @@ public class Server extends PApplet implements Runnable {
                         int f = din.readInt();
                         int anti = din.readInt();
                         int temppause = din.readInt();
-                        System.out.println("TP: " + temppause);
                         int speed = din.readInt();
-                        //System.out.println(speed);
+                        int record = din.readInt();
+                        if (record == 1 && !eventM.recording) {
+                        	Event r = new Event(Events.RECORD, time.getCurrentTime());
+                        	eventM.addEvent(r);
+                        }
                         if (temppause == 1) {
                         	pause.set(index, "1");
                         }
@@ -129,7 +133,9 @@ public class Server extends PApplet implements Runnable {
                         }
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
-                                game_objects.get( i ).handleMovement( f, anti );
+                                //game_objects.get( i ).handleMovement( f, anti );
+                            	Event eMove = new Event(Events.MOVEMENT, game_objects.get(i), f, anti, time.getCurrentTime());
+                            	eventM.addEvent(eMove);
                             }
                         }
                         // System.out.println( f );
@@ -178,6 +184,7 @@ public class Server extends PApplet implements Runnable {
                     try {
                         dout.writeObject( game_objects );
                         dout.writeObject( time );
+                        dout.writeInt(recording);
                         dout.reset();
                     }
                     catch ( final IOException e ) {

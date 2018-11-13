@@ -11,7 +11,7 @@ import processing.core.PApplet;
  * Player object that contains all variables associated with every client's player character
  *
  */
-public class Player extends GameObject implements Renderable {
+public class Player extends GameObject implements Renderable, Cloneable {
 
     public ArrayList<Spawnpoint> spawnlist;
 
@@ -123,6 +123,13 @@ public class Player extends GameObject implements Renderable {
     	Spawnpoint s = spawnlist.get( GUID % 3 );
     	this.rect.x = s.x;
     	this.rect.y = s.y;
+    }
+    
+    @Override
+    public GameObject clone() throws CloneNotSupportedException {
+    	Player p = (Player) super.clone();
+    	p.rect = (Rectangle) rect.clone();
+    	return p;
     }
 
 }

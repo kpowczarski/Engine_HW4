@@ -14,6 +14,15 @@ public class Event implements Serializable {
 	
 	public GameObject ob2; 
 	
+	public int optionalArg1;
+	
+	public int optionalArg2;
+	
+	public Event(Events type, long timestamp) {
+		this.type = type;
+		this.timestamp = timestamp;
+	}
+	
 	public Event(Events type, GameObject ob, long timestamp) {
 		this.type = type;
 		this.timestamp = timestamp;
@@ -27,6 +36,21 @@ public class Event implements Serializable {
 		this.ob2 = ob2;
 	}
 	
+	public Event(Events type, GameObject ob1, int arg1, int arg2, long timestamp) {
+		this(type, ob1, timestamp);
+		optionalArg1 = arg1;
+		optionalArg2 = arg2;
+		
+	}
+	
+	public int getOptionalArg1() {
+		return optionalArg1;
+	}
+
+	public int getOptionalArg2() {
+		return optionalArg2;
+	}
+
 	public GameObject getObject1() {
 		return ob1;
 	}

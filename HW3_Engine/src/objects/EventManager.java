@@ -1,19 +1,30 @@
 package objects;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 import main.Server;
 
-public class EventManager {
+public class EventManager implements Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	public PriorityQueue<Event> events;
 	
-	public ArrayList<GameObject> objects;
+	public PriorityQueue<Event> recordBuffer;
+	
+	public ArrayList<GameObject> objectsInitialState;
+	public ArrayList<GameObject> objectsFinalState;
+	
+	public boolean recording = false;
 	
 	public EventManager(ArrayList<GameObject> g) {
 		events = new PriorityQueue<Event>(10, new EventCompare());
-		objects = g;
+		recordBuffer = new PriorityQueue<Event>(50, new EventCompare());
+		objectsInitialState = new ArrayList<GameObject>();
+		objectsFinalState = new ArrayList<GameObject>();
+		recording = false;
 	}
 	
 	
@@ -21,10 +32,18 @@ public class EventManager {
 		events.add(e);
 	}
 	
+	public void addEventToBuffer(Event e) {
+		recordBuffer.add(e);
+	}
+	
 	
 	public void handleEventsNow(long time) {
 		while (events.peek() != null && events.peek().timestamp <= time) {
 			Event curE = events.poll();
+			if (recording) {
+				addEventToBuffer(curE);
+				System.out.println("Added Event to buffer");
+			}
 			if (curE.type == Events.DEATH) {
 				Player p = (Player) curE.ob1;
 				p.handleDeathEvent();
@@ -36,6 +55,20 @@ public class EventManager {
 			}
 			else if(curE.type == Events.COLLISION) {
 				curE.ob1.handleCollision(curE.ob2);
+			}
+			else if(curE.type == Events.MOVEMENT) {
+				curE.ob1.handleMovement(curE.optionalArg1, curE.optionalArg2);
+			}
+			else if(curE.type == Events.RECORD) {
+				recording = true;
+				Server.recording = 1;
+				for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+                    try {
+						objectsInitialState.add(Server.game_objects.get(i).clone());
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+                }
 			}
 		}
 	}

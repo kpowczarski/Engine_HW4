@@ -10,7 +10,7 @@ import main.Server;
  * Abstract Game object that is inherited by all objects
  *
  */
-public abstract class GameObject implements Renderable, Serializable {
+public abstract class GameObject implements Renderable, Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
 
@@ -73,6 +73,13 @@ public abstract class GameObject implements Renderable, Serializable {
     public void handleMovement ( int f, int anti ) {
         // nothing if not player
 
+    }
+    
+    @Override
+    public GameObject clone() throws CloneNotSupportedException {
+    	GameObject p = (GameObject) super.clone();
+    	p.rect = (Rectangle) rect.clone();
+    	return p;
     }
 
 }

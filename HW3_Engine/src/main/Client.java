@@ -29,6 +29,8 @@ public class Client extends PApplet {
     public int                           anti;
     public int                           pause;
     public int                           speed;
+    public int record;
+    public int recording;
 
     public static void main ( final String[] args ) {
         try {
@@ -66,6 +68,8 @@ public class Client extends PApplet {
         anti = 0;
         pause = 0;
         speed = 1;
+        record = 0;
+        recording = 0;
     }
 
     @SuppressWarnings ( "unchecked" )
@@ -79,6 +83,7 @@ public class Client extends PApplet {
             output_stream.writeInt( anti );
             output_stream.writeInt( pause );
             output_stream.writeInt( speed );
+            output_stream.writeInt( record );
             move = 0;
             anti = 0;
             output_stream.reset();
@@ -97,6 +102,7 @@ public class Client extends PApplet {
         try {
             game_objects = (ArrayList<GameObject>) input_stream.readObject();
             time = (Timeline) input_stream.readObject();
+            recording = input_stream.readInt();
         }
         catch ( final IOException | ClassNotFoundException e ) {
             try {
@@ -113,6 +119,11 @@ public class Client extends PApplet {
             game_objects.get( i ).render( this );
         }
         time.render( this );
+        if (recording == 1) {
+        	this.fill(255);
+        	this.textSize( 20 );
+            this.text( "Recording", 100, 30 );
+        }
         // output_stream.writeInt( id );
         // output_stream.writeInt( iter );
         // ++iter;
@@ -163,6 +174,12 @@ public class Client extends PApplet {
         }
         else if ( key == 'u' ) {
             pause = 0;
+        }
+        else if (key == 'r') {
+        	record = 1;
+        }
+        else if (key == 't') {
+        	record = 0;
         }
         else if ( key == '.' ) {
             if ( speed == 0 ) {

@@ -6,7 +6,11 @@ public enum Events {
 	
 	DEATH(1),
 	
-	SPAWN(2)
+	SPAWN(2),
+	
+	MOVEMENT(3),
+	
+	RECORD(4)
 	
 	;
 	
