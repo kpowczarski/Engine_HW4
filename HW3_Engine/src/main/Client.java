@@ -29,8 +29,10 @@ public class Client extends PApplet {
     public int                           anti;
     public int                           pause;
     public int                           speed;
-    public int record;
-    public int recording;
+    public int                           record;
+    public int                           recording;
+    public int                           replayInit;
+    public int                           backgroundColor;
 
     public static void main ( final String[] args ) {
         try {
@@ -67,15 +69,17 @@ public class Client extends PApplet {
         move = 0;
         anti = 0;
         pause = 0;
-        speed = 1;
+        speed = -1;
         record = 0;
         recording = 0;
+        replayInit = 0;
+        backgroundColor = 51;
     }
 
     @SuppressWarnings ( "unchecked" )
     @Override
     public void draw () {
-        background( 51 );
+        background( backgroundColor );
         // int key = keyPressMove();
         try {
             // output_stream.writeInt( key );
@@ -103,6 +107,8 @@ public class Client extends PApplet {
             game_objects = (ArrayList<GameObject>) input_stream.readObject();
             time = (Timeline) input_stream.readObject();
             recording = input_stream.readInt();
+            replayInit = input_stream.readInt();
+
         }
         catch ( final IOException | ClassNotFoundException e ) {
             try {
@@ -119,10 +125,17 @@ public class Client extends PApplet {
             game_objects.get( i ).render( this );
         }
         time.render( this );
-        if (recording == 1) {
-        	this.fill(255);
-        	this.textSize( 20 );
+        if ( recording == 1 ) {
+            this.fill( 255 );
+            this.textSize( 20 );
             this.text( "Recording", 100, 30 );
+        }
+        if ( replayInit == 1 ) {
+            backgroundColor = 151;
+            this.fill( 255 );
+            this.textSize( 20 );
+            this.text( "Replay Speed", 540, 410 );
+            this.text( "Press 1 for half speed, 2 for normal, and 3 for double", 350, 450 );
         }
         // output_stream.writeInt( id );
         // output_stream.writeInt( iter );
@@ -175,27 +188,22 @@ public class Client extends PApplet {
         else if ( key == 'u' ) {
             pause = 0;
         }
-        else if (key == 'r') {
-        	record = 1;
+        else if ( key == 'r' ) {
+            record = 1;
+            speed = 1;
         }
-        else if (key == 't') {
-        	record = 0;
+        else if ( key == 't' ) {
+            record = 0;
+            speed = -1;
         }
-        else if ( key == '.' ) {
-            if ( speed == 0 ) {
-                speed = 1;
-            }
-            else {
-                speed = 2;
-            }
+        else if ( key == '1' ) {
+            speed = 0;
         }
-        else if ( key == ',' ) {
-            if ( speed == 2 ) {
-                speed = 1;
-            }
-            else {
-                speed = 0;
-            }
+        else if ( key == '2' ) {
+            speed = 1;
+        }
+        else if ( key == '3' ) {
+            speed = 2;
         }
     }
 

@@ -29,11 +29,14 @@ public class Server extends PApplet implements Runnable {
     private static CopyOnWriteArrayList<ObjectInputStreamId> input_streams;
     private static CopyOnWriteArrayList<ObjectOutputStream>  output_streams;
     public static ArrayList<GameObject>                      game_objects;
-    public static ArrayList<String> pause;
-    public static EventManager eventM;
-    public static Timeline time;
-    public static Timeline replayTime;
-    public static int recording = 0;
+    public static ArrayList<String>                          pause;
+    public static int                                        recordA;
+    public static EventManager                               eventM;
+    public static Timeline                                   time;
+    public static Timeline                                   replayTime;
+    public static int                                        recording  = 0;
+    public static int                                        replayInit = 0;
+    public static boolean                                    pausedInit = false;
     private static ServerSocket                              ss;
 
     public Server () {
@@ -48,12 +51,12 @@ public class Server extends PApplet implements Runnable {
                 System.out.println( "New connection Established" );
                 synchronized ( this ) {
                     final Player newPlayer = new Player( 32, 32, 255, 0, 0 );
-                    Event spawnE = new Event(Events.SPAWN, newPlayer, time.getCurrentTime());
-                    eventM.addEvent(spawnE);
+                    Event spawnE = new Event( Events.SPAWN, newPlayer, time.getCurrentTime() );
+                    eventM.addEvent( spawnE );
                     output_streams.add( new ObjectOutputStream( s.getOutputStream() ) );
                     input_streams.add( new ObjectInputStreamId( s.getInputStream(), newPlayer.GUID ) );
-                    pause.add("0");
-                    //game_objects.add( newPlayer );
+                    pause.add( "0" );
+                    // game_objects.add( newPlayer );
                 }
                 System.out.println( "Streams successfully added." );
             }
@@ -88,9 +91,10 @@ public class Server extends PApplet implements Runnable {
         game_objects.add( plat6 );
         game_objects.add( plat7 );
         game_objects.add( d );
-        eventM = new EventManager(game_objects);
+        eventM = new EventManager( game_objects );
         time = new Timeline( 15 );
         pause = new ArrayList<String>();
+        recordA = -1;
         try {
             ss = new ServerSocket( 5422 );
         }
@@ -105,7 +109,7 @@ public class Server extends PApplet implements Runnable {
         long currentT1 = time.getCurrentTime();
         while ( true ) {
             synchronized ( server ) {
-            	int index = 0;
+                int index = 0;
                 for ( final ObjectInputStreamId din : input_streams ) {
                     try {
                         int f = din.readInt();
@@ -113,16 +117,23 @@ public class Server extends PApplet implements Runnable {
                         int temppause = din.readInt();
                         int speed = din.readInt();
                         int record = din.readInt();
-                        if (record == 1 && !eventM.recording) {
-                        	Event r = new Event(Events.RECORD, time.getCurrentTime());
-                        	eventM.addEvent(r);
+                        if ( record == 1 && !eventM.recording ) {
+                            recordA = index;
+                            Event r = new Event( Events.RECORD, time.getCurrentTime() );
+                            eventM.addEvent( r );
                         }
-                        if (temppause == 1) {
-                        	pause.set(index, "1");
+                        if ( record == 0 && eventM.recording && recordA == index ) {
+                            recordA = -1;
+                            Event r = new Event( Events.STOPRECORD, time.getCurrentTime() );
+                            eventM.addEvent( r );
                         }
-                        if (temppause == 0) {
-                        	pause.set(index, "0");
+                        if ( temppause == 1 ) {
+                            pause.set( index, "1" );
                         }
+                        if ( temppause == 0 ) {
+                            pause.set( index, "0" );
+                        }
+                        // System.out.println( temppause );
                         if ( speed == 2 ) {
                             time.doubleTime();
                         }
@@ -134,9 +145,11 @@ public class Server extends PApplet implements Runnable {
                         }
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             if ( game_objects.get( i ).GUID == din.getId() ) {
-                                //game_objects.get( i ).handleMovement( f, anti );
-                            	Event eMove = new Event(Events.MOVEMENT, game_objects.get(i), f, anti, time.getCurrentTime());
-                            	eventM.addEvent(eMove);
+                                // game_objects.get( i ).handleMovement( f, anti
+                                // );
+                                Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
+                                        time.getCurrentTime() );
+                                eventM.addEvent( eMove );
                             }
                         }
                         // System.out.println( f );
@@ -154,19 +167,21 @@ public class Server extends PApplet implements Runnable {
                     index++;
                 }
             }
+            // boolean normal = true;
+            // boolean doubleT = false;
+            // boolean half = false;
             boolean paused = false;
-            //boolean normal = true;
-            //boolean doubleT = false;
-            //boolean half = false;
-            for (int i = 0; i < input_streams.size(); i++ ) {
-            	if (pause.get(i).equals("1")) {
-            		paused = true;
-            	}
+            for ( int i = 0; i < input_streams.size(); i++ ) {
+                // System.out.println( pause.get( i ) );
+                if ( pause.get( i ).equals( "1" ) ) {
+                    paused = true;
+                }
+
             }
             if ( !time.paused && paused ) {
                 time.pause();
             }
-            else if ( time.paused && !paused) {
+            else if ( time.paused && !paused && !pausedInit ) {
                 time.unpause();
             }
             synchronized ( server ) {
@@ -176,7 +191,13 @@ public class Server extends PApplet implements Runnable {
                         for ( int i = 0; i < game_objects.size(); i++ ) {
                             game_objects.get( i ).update();
                         }
-                        eventM.handleEventsNow(currentT1);
+                        if ( eventM.replay ) {
+                            eventM.handleReplayEvents();
+                        }
+                        else {
+                            eventM.handleEventsNow( currentT1 );
+                        }
+
                     }
                 }
             }
@@ -185,7 +206,8 @@ public class Server extends PApplet implements Runnable {
                     try {
                         dout.writeObject( game_objects );
                         dout.writeObject( time );
-                        dout.writeInt(recording);
+                        dout.writeInt( recording );
+                        dout.writeInt( replayInit );
                         dout.reset();
                     }
                     catch ( final IOException e ) {

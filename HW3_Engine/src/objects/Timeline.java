@@ -2,6 +2,7 @@ package objects;
 
 import java.io.Serializable;
 
+import main.Server;
 import processing.core.PApplet;
 
 public class Timeline implements TimelineI, Serializable, Renderable {
@@ -88,9 +89,9 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         startTime = System.currentTimeMillis();
 
     }
-    
-    public void startA() {
-    	startTime = optionalAnchor.getCurrentTime();
+
+    public void startA () {
+        startTime = optionalAnchor.getCurrentTime();
     }
 
     @Override
@@ -119,6 +120,10 @@ public class Timeline implements TimelineI, Serializable, Renderable {
 
     public void normalTime () {
         this.tic = normalTime;
+        if ( Server.replayInit == 1 ) {
+            Server.replayInit = 0;
+            Server.eventM.startReplay();
+        }
     }
 
 }
