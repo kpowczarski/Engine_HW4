@@ -124,7 +124,7 @@ public class Server extends PApplet implements Runnable {
                             eventM.addEvent( r );
                         }
                         if ( record == 0 && eventM.recording && recordA == index ) {
-                            recordA = -1;
+                            // recordA = -1;
                             Event r = new Event( Events.STOPRECORD, time.getCurrentTime() );
                             eventM.addEvent( r );
                         }
@@ -134,7 +134,7 @@ public class Server extends PApplet implements Runnable {
                         if ( temppause == 0 ) {
                             pause.set( index, "0" );
                         }
-                        if ( speed == 2 ) {
+                        if ( speed == 2 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
                                 if ( Server.replayInit == 1 ) {
                                     Server.replayInit = 0;
@@ -150,7 +150,7 @@ public class Server extends PApplet implements Runnable {
                                 }
                             }
                         }
-                        if ( speed == 0 ) {
+                        if ( speed == 0 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
                                 if ( Server.replayInit == 1 ) {
                                     Server.replayInit = 0;
@@ -166,7 +166,7 @@ public class Server extends PApplet implements Runnable {
                                 }
                             }
                         }
-                        if ( speed == 1 ) {
+                        if ( speed == 1 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
                                 if ( Server.replayInit == 1 ) {
                                     Server.replayInit = 0;
@@ -238,10 +238,7 @@ public class Server extends PApplet implements Runnable {
                             for ( int i = 0; i < game_objects.size(); i++ ) {
                                 game_objects.get( i ).update( currentRT );
                             }
-                            System.out.println( eventM.recordBuffer.size() );
-                            System.out.println( "Time: " + currentRT );
                             eventM.handleReplayEvents( currentRT );
-                            System.out.println( eventM.recordBuffer.size() );
                         }
                         if ( !eventM.replay ) {
                             for ( int i = 0; i < game_objects.size(); i++ ) {
@@ -249,8 +246,6 @@ public class Server extends PApplet implements Runnable {
                             }
                             if ( eventM.recording ) {
                                 eventM.handleEventsNow( currentT1, currentRT );
-                                System.out.println( eventM.recordBuffer.size() );
-                                System.out.println( currentRT );
                             }
                             else {
                                 eventM.handleEventsNow( currentT1, 0 );
