@@ -24,7 +24,6 @@ public class Client extends PApplet {
     private static Socket                s;
     public static int                    parentHeight = 900;
     public static int                    parentWidth  = 1300;
-    public static int                    id;
     public int                           move;
     public int                           anti;
     public int                           pause;
@@ -41,7 +40,6 @@ public class Client extends PApplet {
             output_stream = new ObjectOutputStreamId( s.getOutputStream() );
             input_stream = new ObjectInputStream( s.getInputStream() );
 
-            id = Integer.parseInt( args[0] );
             System.out.println( "Connected" );
             PApplet.main( "main.Client" );
 
