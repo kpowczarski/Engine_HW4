@@ -80,7 +80,7 @@ public class Platform extends GameObject implements Renderable {
     }
 
     @Override
-    public void update () {
+    public void update (long time) {
         this.rect.y += this.vely;
         this.rect.x += this.velx;
         if ( this.rect.x > this.maxX ) {

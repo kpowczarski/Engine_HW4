@@ -42,11 +42,11 @@ public class Ground extends GameObject implements Renderable {
     public void handleCollision ( final GameObject o ) {
         final Player p = (Player) o;
         p.isColliding = true;
-        p.rect.y = this.rect.y - 32;
+        p.rect.y = this.rect.y - 33;
     }
 
     @Override
-    public void update () {
+    public void update (long time) {
         // nothing
 
     }

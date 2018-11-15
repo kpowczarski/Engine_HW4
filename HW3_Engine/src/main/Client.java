@@ -32,6 +32,7 @@ public class Client extends PApplet {
     public int                           record;
     public int                           recording;
     public int                           replayInit;
+    public int                           replay;
     public int                           backgroundColor;
 
     public static void main ( final String[] args ) {
@@ -73,6 +74,7 @@ public class Client extends PApplet {
         record = 0;
         recording = 0;
         replayInit = 0;
+        replay = 0;
         backgroundColor = 51;
     }
 
@@ -108,6 +110,7 @@ public class Client extends PApplet {
             time = (Timeline) input_stream.readObject();
             recording = input_stream.readInt();
             replayInit = input_stream.readInt();
+            replay = input_stream.readInt();
 
         }
         catch ( final IOException | ClassNotFoundException e ) {
@@ -131,11 +134,17 @@ public class Client extends PApplet {
             this.text( "Recording", 100, 30 );
         }
         if ( replayInit == 1 ) {
-            backgroundColor = 151;
             this.fill( 255 );
             this.textSize( 20 );
             this.text( "Replay Speed", 540, 410 );
             this.text( "Press 1 for half speed, 2 for normal, and 3 for double", 350, 450 );
+        }
+        if (replay == 1) {
+        	backgroundColor = 150;
+        }
+        else {
+        	backgroundColor = 51;
+        	speed = -1;
         }
         // output_stream.writeInt( id );
         // output_stream.writeInt( iter );
@@ -190,20 +199,35 @@ public class Client extends PApplet {
         }
         else if ( key == 'r' ) {
             record = 1;
-            speed = 1;
+            //speed = 1;
         }
         else if ( key == 't' ) {
             record = 0;
-            speed = -1;
+            //speed = -1;
         }
         else if ( key == '1' ) {
-            speed = 0;
+            if (replay == 1 || replayInit == 1)	 {
+            	speed = 0;
+            }
+            else {
+            	speed = -1;
+            }
         }
         else if ( key == '2' ) {
-            speed = 1;
+        	if (replay == 1 || replayInit == 1)	 {
+        		speed = 1;
+        	}
+        	else {
+            	speed = -1;
+            }
         }
         else if ( key == '3' ) {
-            speed = 2;
+        	if (replay == 1 || replayInit == 1)	 {
+        		speed = 2;
+        	}
+        	else {
+            	speed = -1;
+            }
         }
     }
 

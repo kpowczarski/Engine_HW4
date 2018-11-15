@@ -36,6 +36,7 @@ public class Server extends PApplet implements Runnable {
     public static Timeline                                   replayTime;
     public static int                                        recording  = 0;
     public static int                                        replayInit = 0;
+    public static int                                        replay  = 0;
     public static boolean                                    pausedInit = false;
     private static ServerSocket                              ss;
 
@@ -133,24 +134,32 @@ public class Server extends PApplet implements Runnable {
                         if ( temppause == 0 ) {
                             pause.set( index, "0" );
                         }
-                        // System.out.println( temppause );
+                        //System.out.println( speed );
                         if ( speed == 2 ) {
-                            time.doubleTime();
+                        	if (replay == 1 || replayInit == 1) {
+                        		time.doubleTime();
+                        	}
                         }
                         if ( speed == 0 ) {
-                            time.halfTime();
+                        	if (replay == 1 || replayInit == 1) {
+                        		time.halfTime();
+                        	}
                         }
                         if ( speed == 1 ) {
-                            time.normalTime();
+                        	if (replay == 1 || replayInit == 1) {
+                        		time.normalTime();
+                        	}
                         }
-                        for ( int i = 0; i < game_objects.size(); i++ ) {
-                            if ( game_objects.get( i ).GUID == din.getId() ) {
-                                // game_objects.get( i ).handleMovement( f, anti
-                                // );
-                                Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
-                                        time.getCurrentTime() );
-                                eventM.addEvent( eMove );
-                            }
+                        if (!eventM.replay) {
+	                        for ( int i = 0; i < game_objects.size(); i++ ) {
+	                            if ( game_objects.get( i ).GUID == din.getId() ) {
+	                                // game_objects.get( i ).handleMovement( f, anti
+	                                // );
+	                                Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
+	                                        time.getCurrentTime() );
+	                                eventM.addEvent( eMove );
+	                            }
+	                        }
                         }
                         // System.out.println( f );
                         // System.out.println( anti );
@@ -187,15 +196,27 @@ public class Server extends PApplet implements Runnable {
             synchronized ( server ) {
                 if ( currentT1 != time.getCurrentTime() ) {
                     currentT1 = time.getCurrentTime();
+                    long currentRT = 0;
+                    if (eventM.recording ||  eventM.replay ) {
+                    	currentRT = replayTime.getCurrentTime();
+                    }
                     if ( input_streams.size() >= 1 ) {
-                        for ( int i = 0; i < game_objects.size(); i++ ) {
-                            game_objects.get( i ).update();
+                    	if ( eventM.replay ) {
+                    		for ( int i = 0; i < game_objects.size(); i++ ) {
+                                game_objects.get( i ).update(currentRT);
+                            }
+                    		eventM.handleReplayEvents(currentRT);
                         }
-                        if ( eventM.replay ) {
-                            eventM.handleReplayEvents();
-                        }
-                        else {
-                            eventM.handleEventsNow( currentT1 );
+                        if (!eventM.replay){
+                        	for ( int i = 0; i < game_objects.size(); i++ ) {
+                                game_objects.get( i ).update(currentT1);
+                            }
+                        	if (eventM.recording) {
+                        		eventM.handleEventsNow( currentT1, currentRT );
+                        	}
+                        	else {
+                        		eventM.handleEventsNow( currentT1, 0 );
+                        	}
                         }
 
                     }
@@ -208,6 +229,7 @@ public class Server extends PApplet implements Runnable {
                         dout.writeObject( time );
                         dout.writeInt( recording );
                         dout.writeInt( replayInit );
+                        dout.writeInt( replay );
                         dout.reset();
                     }
                     catch ( final IOException e ) {

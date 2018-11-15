@@ -63,7 +63,7 @@ public class Player extends GameObject implements Renderable {
     }
 
     @Override
-    public void update () {
+    public void update (long time) {
         if ( this.rect.x > Client.parentWidth ) {
             this.rect.x = -31;
         }
@@ -80,7 +80,7 @@ public class Player extends GameObject implements Renderable {
             this.vely = 5;
         }
         this.rect.x += this.velx;
-        collides();
+        collides(time);
     }
 
     @Override

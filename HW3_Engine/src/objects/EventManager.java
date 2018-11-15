@@ -41,22 +41,56 @@ public class EventManager implements Serializable {
     public void startReplay () {
         Server.replayTime.startA();
         for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+        	Server.game_objects.get( i ).saveFinalState();
             Server.game_objects.get( i ).teleportStartReplay();
         }
+        Server.pausedInit = false;
     }
 
-    public void handleReplayEvents () {
-        long time = Server.replayTime.getCurrentTime();
+    public void handleReplayEvents (long time) {
+        //long time = Server.replayTime.getCurrentTime();
+    	if (recordBuffer.peek() == null) {
+    		replay = false;
+    		Server.replay = 0;
+    		//Server.time.normalTime();
+    		for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+            	Server.game_objects.get( i ).restoreFinalState();
+            }
+    	}
         while ( recordBuffer.peek() != null && recordBuffer.peek().timestamp <= time ) {
+        	Event curE = recordBuffer.poll();
+        	if ( curE.type == Events.DEATH ) {
+                Player p = (Player) curE.ob1;
+                p.handleDeathEvent();
+            }
+            else if ( curE.type == Events.SPAWN ) {
+                Player pS = (Player) curE.ob1;
+                pS.handleSpawnEvent();
+                Server.game_objects.add( pS );
+            }
+            else if ( curE.type == Events.COLLISION ) {
+                curE.ob1.handleCollision( curE.ob2 );
+            }
+            else if ( curE.type == Events.MOVEMENT ) {
+                curE.ob1.handleMovement( curE.optionalArg1, curE.optionalArg2 );
+            }
+            else if ( curE.type == Events.STOPRECORD ) {
+            	replay = false;
+        		Server.replay = 0;
+        		//Server.time.normalTime();
+        		for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+                	Server.game_objects.get( i ).restoreFinalState();
+                }
+            }
 
         }
     }
 
-    public void handleEventsNow ( long time ) {
+    public void handleEventsNow ( long time, long rtime ) {
         while ( events.peek() != null && events.peek().timestamp <= time ) {
             Event curE = events.poll();
             if ( recording && curE.type != Events.STOPRECORD ) {
-                curE.timestamp = Server.replayTime.getCurrentTime();
+                curE.timestamp = rtime;
                 addEventToBuffer( curE );
                 // System.out.println( "Added Event to buffer" );
             }
@@ -87,11 +121,14 @@ public class EventManager implements Serializable {
             }
             else if ( curE.type == Events.STOPRECORD ) {
                 recording = false;
-                Server.recording = 0;
                 Server.time.pause();
+                curE.timestamp = Server.replayTime.getCurrentTime();
+                addEventToBuffer( curE );
+                Server.recording = 0;
                 Server.pausedInit = true;
                 replay = true;
                 Server.replayInit = 1;
+                Server.replay = 1;
 
             }
         }

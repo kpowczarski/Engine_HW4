@@ -28,7 +28,13 @@ public abstract class GameObject implements Renderable, Serializable {
     
     public float 			  rvelx, rvely;
     
+    public int 				  fx, fy;
+    
+    public float 			  fvelx, fvely;
+    
     public boolean 			  rjump = false;
+    
+    public boolean 			  fjump = false;
 
     public static double      gravity          = .5;
 
@@ -47,7 +53,7 @@ public abstract class GameObject implements Renderable, Serializable {
         return this.rect;
     }
 
-    public void update () {
+    public void update (long time) {
         // nothing
     }
 
@@ -55,7 +61,7 @@ public abstract class GameObject implements Renderable, Serializable {
         // nothing
     }
 
-    public boolean collides () {
+    public boolean collides (long time) {
         // if ( p.player.intersects( GameLoop.g.ground ) ) {
         // p.isColliding = true;
         // p.player.y = GameLoop.g.ground.y - 32;
@@ -66,7 +72,12 @@ public abstract class GameObject implements Renderable, Serializable {
             if ( go.GUID != this.GUID ) {
                 if ( this.rect.intersects( go.getRect() ) ) {
                     //go.handleCollision( this );
-                	Event e = new Event(Events.COLLISION, go, this, Server.time.getCurrentTime());
+                	if (Server.eventM.replay) {
+                		Event e = new Event(Events.COLLISION, go, this, Server.replayTime.getCurrentTime());
+                    	Server.eventM.addEventToBuffer(e);
+                        return true;
+                	}
+                	Event e = new Event(Events.COLLISION, go, this, time);
                 	Server.eventM.addEvent(e);
                     return true;
                 }
@@ -95,6 +106,22 @@ public abstract class GameObject implements Renderable, Serializable {
     	this.velx = this.rvelx;
     	this.vely = this.rvely;
     	this.jump = this.rjump;
+    }
+    
+    public void saveFinalState() {
+    	this.fx = this.rect.x;
+    	this.fy = this.rect.y;
+    	this.fvelx = this.velx;
+    	this.fvely = this.vely;
+    	this.fjump = this.jump;
+    }
+    
+    public void restoreFinalState() {
+    	this.rect.x = this.fx;
+    	this.rect.y = this.fy;
+    	this.velx = this.fvelx;
+    	this.vely = this.fvely;
+    	this.jump = this.fjump;
     }
 
 }

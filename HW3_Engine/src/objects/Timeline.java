@@ -132,6 +132,10 @@ public class Timeline implements TimelineI, Serializable, Renderable {
             timesincelastchange = System.currentTimeMillis();
             this.tic = halfTime;
         }
+        if ( Server.replayInit == 1 ) {
+            Server.replayInit = 0;
+            Server.eventM.startReplay();
+        }
 
     }
 

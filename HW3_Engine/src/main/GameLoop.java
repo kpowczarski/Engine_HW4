@@ -120,9 +120,9 @@ public class GameLoop extends PApplet {
         // if ( player.vely > 5 ) {
         // player.vely = 5;
         // }
-        plat1.update();
-        plat2.update();
-        player.update();
+        plat1.update(0);
+        plat2.update(0);
+        player.update(0);
         player.render( this );
         // if ( g.ground.intersects( player.player ) ) {
         // collidingP = true;
