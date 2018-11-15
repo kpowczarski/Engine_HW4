@@ -42,6 +42,11 @@ public class Server extends PApplet implements Runnable {
 
     public Server () {
     }
+    
+    @Override
+    public void settings () {
+        size( 100, 100 );
+    }
 
     @Override
     public void run () {
@@ -68,7 +73,7 @@ public class Server extends PApplet implements Runnable {
     }
 
     public static void main ( final String[] args ) {
-        // PApplet.main( "main.Server" );
+        PApplet.main( "main.Server" );
         final Ground g = new Ground();
         final Platform plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
         plat1.setMovingSettings( 800, 100, 0, 0, 2, 0 );
