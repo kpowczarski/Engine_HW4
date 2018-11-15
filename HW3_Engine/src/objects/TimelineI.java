@@ -14,4 +14,8 @@ public interface TimelineI {
 
     public void halfTime ();
 
+    public void normalTime ();
+
+    public void setTic ( int tic );
+
 }

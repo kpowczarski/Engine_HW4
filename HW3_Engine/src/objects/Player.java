@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 import main.Client;
 import processing.core.PApplet;
+
 /**
- * 
- * @author Kevin Owczarski 
- * Player object that contains all variables associated with every client's player character
+ *
+ * @author Kevin Owczarski Player object that contains all variables associated
+ *         with every client's player character
  *
  */
 public class Player extends GameObject implements Renderable {
@@ -43,7 +44,7 @@ public class Player extends GameObject implements Renderable {
         spawnlist.add( s2 );
         Spawnpoint s3 = new Spawnpoint( 210, 838 );
         spawnlist.add( s3 );
-        //Spawnpoint cur = spawnlist.get( this.GUID % 3 );
+        // Spawnpoint cur = spawnlist.get( this.GUID % 3 );
         this.rect = new Rectangle( 0, 0, width, height );
     }
 
@@ -63,7 +64,7 @@ public class Player extends GameObject implements Renderable {
     }
 
     @Override
-    public void update (long time) {
+    public void update ( long time ) {
         if ( this.rect.x > Client.parentWidth ) {
             this.rect.x = -31;
         }
@@ -79,8 +80,8 @@ public class Player extends GameObject implements Renderable {
         if ( this.vely > 5 ) {
             this.vely = 5;
         }
-        this.rect.x += this.velx;
-        collides(time);
+        // this.rect.x += this.velx;
+        collides( time );
     }
 
     @Override
@@ -111,19 +112,19 @@ public class Player extends GameObject implements Renderable {
                 jump = false;
             }
         }
+        this.rect.x += this.velx;
     }
-    
-    public void handleDeathEvent() {
-    	Spawnpoint s = spawnlist.get( GUID % 3 );
-    	this.rect.x = s.x;
-    	this.rect.y = s.y;
+
+    public void handleDeathEvent () {
+        Spawnpoint s = spawnlist.get( GUID % 3 );
+        this.rect.x = s.x;
+        this.rect.y = s.y;
     }
-    
-    public void handleSpawnEvent() {
-    	Spawnpoint s = spawnlist.get( GUID % 3 );
-    	this.rect.x = s.x;
-    	this.rect.y = s.y;
+
+    public void handleSpawnEvent () {
+        Spawnpoint s = spawnlist.get( GUID % 3 );
+        this.rect.x = s.x;
+        this.rect.y = s.y;
     }
-    
 
 }

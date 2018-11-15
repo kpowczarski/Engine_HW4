@@ -4,10 +4,10 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 
 import main.Server;
+
 /**
- * 
- * @author Kevin Owczarski
- * Abstract Game object that is inherited by all objects
+ *
+ * @author Kevin Owczarski Abstract Game object that is inherited by all objects
  *
  */
 public abstract class GameObject implements Renderable, Serializable {
@@ -23,18 +23,18 @@ public abstract class GameObject implements Renderable, Serializable {
     public float              velx;
 
     public float              vely;
-    
-    public int 				  rx, ry;
-    
-    public float 			  rvelx, rvely;
-    
-    public int 				  fx, fy;
-    
-    public float 			  fvelx, fvely;
-    
-    public boolean 			  rjump = false;
-    
-    public boolean 			  fjump = false;
+
+    public int                rx, ry;
+
+    public float              rvelx, rvely;
+
+    public int                fx, fy;
+
+    public float              fvelx, fvely;
+
+    public boolean            rjump            = false;
+
+    public boolean            fjump            = false;
 
     public static double      gravity          = .5;
 
@@ -53,7 +53,7 @@ public abstract class GameObject implements Renderable, Serializable {
         return this.rect;
     }
 
-    public void update (long time) {
+    public void update ( long time ) {
         // nothing
     }
 
@@ -61,7 +61,7 @@ public abstract class GameObject implements Renderable, Serializable {
         // nothing
     }
 
-    public boolean collides (long time) {
+    public boolean collides ( long time ) {
         // if ( p.player.intersects( GameLoop.g.ground ) ) {
         // p.isColliding = true;
         // p.player.y = GameLoop.g.ground.y - 32;
@@ -71,14 +71,14 @@ public abstract class GameObject implements Renderable, Serializable {
             final GameObject go = Server.game_objects.get( i );
             if ( go.GUID != this.GUID ) {
                 if ( this.rect.intersects( go.getRect() ) ) {
-                    //go.handleCollision( this );
-                	if (Server.eventM.replay) {
-                		Event e = new Event(Events.COLLISION, go, this, Server.replayTime.getCurrentTime());
-                    	Server.eventM.addEventToBuffer(e);
+                    // go.handleCollision( this );
+                    if ( Server.eventM.replay ) {
+                        Event e = new Event( Events.COLLISION, go, this, Server.replayTime.getCurrentTime() );
+                        Server.eventM.addEventToBuffer( e );
                         return true;
-                	}
-                	Event e = new Event(Events.COLLISION, go, this, time);
-                	Server.eventM.addEvent(e);
+                    }
+                    Event e = new Event( Events.COLLISION, go, this, time );
+                    Server.eventM.addEvent( e );
                     return true;
                 }
             }
@@ -91,37 +91,37 @@ public abstract class GameObject implements Renderable, Serializable {
         // nothing if not player
 
     }
-    
-    public void setReplay() {
-    	this.rx = this.rect.x;
-    	this.ry = this.rect.y;
-    	this.rvelx = this.velx;
-    	this.rvely = this.vely;
-    	this.rjump = this.jump;
+
+    public void setReplay () {
+        this.rx = this.rect.x;
+        this.ry = this.rect.y;
+        this.rvelx = this.velx;
+        this.rvely = this.vely;
+        this.rjump = this.jump;
     }
-    
-    public void teleportStartReplay() {
-    	this.rect.x = this.rx;
-    	this.rect.y = this.ry;
-    	this.velx = this.rvelx;
-    	this.vely = this.rvely;
-    	this.jump = this.rjump;
+
+    public void teleportStartReplay () {
+        this.rect.x = this.rx;
+        this.rect.y = this.ry;
+        this.velx = this.rvelx;
+        this.vely = this.rvely;
+        this.jump = this.rjump;
     }
-    
-    public void saveFinalState() {
-    	this.fx = this.rect.x;
-    	this.fy = this.rect.y;
-    	this.fvelx = this.velx;
-    	this.fvely = this.vely;
-    	this.fjump = this.jump;
+
+    public void saveFinalState () {
+        this.fx = this.rect.x;
+        this.fy = this.rect.y;
+        this.fvelx = this.velx;
+        this.fvely = this.vely;
+        this.fjump = this.jump;
     }
-    
-    public void restoreFinalState() {
-    	this.rect.x = this.fx;
-    	this.rect.y = this.fy;
-    	this.velx = this.fvelx;
-    	this.vely = this.fvely;
-    	this.jump = this.fjump;
+
+    public void restoreFinalState () {
+        this.rect.x = this.fx;
+        this.rect.y = this.fy;
+        this.velx = this.fvelx;
+        this.vely = this.fvely;
+        this.jump = this.fjump;
     }
 
 }

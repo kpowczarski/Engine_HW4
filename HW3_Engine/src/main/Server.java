@@ -36,7 +36,7 @@ public class Server extends PApplet implements Runnable {
     public static Timeline                                   replayTime;
     public static int                                        recording  = 0;
     public static int                                        replayInit = 0;
-    public static int                                        replay  = 0;
+    public static int                                        replay     = 0;
     public static boolean                                    pausedInit = false;
     private static ServerSocket                              ss;
 
@@ -93,7 +93,7 @@ public class Server extends PApplet implements Runnable {
         game_objects.add( plat7 );
         game_objects.add( d );
         eventM = new EventManager( game_objects );
-        time = new Timeline( 15 );
+        time = new Timeline( 10 );
         pause = new ArrayList<String>();
         recordA = -1;
         try {
@@ -134,32 +134,65 @@ public class Server extends PApplet implements Runnable {
                         if ( temppause == 0 ) {
                             pause.set( index, "0" );
                         }
-                        //System.out.println( speed );
                         if ( speed == 2 ) {
-                        	if (replay == 1 || replayInit == 1) {
-                        		time.doubleTime();
-                        	}
+                            if ( eventM.replay || replayInit == 1 ) {
+                                if ( Server.replayInit == 1 ) {
+                                    Server.replayInit = 0;
+                                    Server.eventM.startReplay();
+                                    pausedInit = false;
+                                    time.unpause();
+                                    time.doubleTime();
+                                    replayTime.startA();
+                                    eventM.replay = true;
+                                }
+                                else {
+                                    time.doubleTime();
+                                }
+                            }
                         }
                         if ( speed == 0 ) {
-                        	if (replay == 1 || replayInit == 1) {
-                        		time.halfTime();
-                        	}
+                            if ( eventM.replay || replayInit == 1 ) {
+                                if ( Server.replayInit == 1 ) {
+                                    Server.replayInit = 0;
+                                    Server.eventM.startReplay();
+                                    pausedInit = false;
+                                    time.unpause();
+                                    time.halfTime();
+                                    replayTime.startA();
+                                    eventM.replay = true;
+                                }
+                                else {
+                                    time.halfTime();
+                                }
+                            }
                         }
                         if ( speed == 1 ) {
-                        	if (replay == 1 || replayInit == 1) {
-                        		time.normalTime();
-                        	}
+                            if ( eventM.replay || replayInit == 1 ) {
+                                if ( Server.replayInit == 1 ) {
+                                    Server.replayInit = 0;
+                                    Server.eventM.startReplay();
+                                    pausedInit = false;
+                                    time.unpause();
+                                    time.normalTime();
+                                    replayTime.startA();
+                                    eventM.replay = true;
+                                }
+                                else {
+                                    time.normalTime();
+                                }
+                            }
                         }
-                        if (!eventM.replay) {
-	                        for ( int i = 0; i < game_objects.size(); i++ ) {
-	                            if ( game_objects.get( i ).GUID == din.getId() ) {
-	                                // game_objects.get( i ).handleMovement( f, anti
-	                                // );
-	                                Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
-	                                        time.getCurrentTime() );
-	                                eventM.addEvent( eMove );
-	                            }
-	                        }
+                        if ( !eventM.replay ) {
+                            for ( int i = 0; i < game_objects.size(); i++ ) {
+                                if ( game_objects.get( i ).GUID == din.getId() ) {
+                                    // game_objects.get( i ).handleMovement( f,
+                                    // anti
+                                    // );
+                                    Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
+                                            time.getCurrentTime() );
+                                    eventM.addEvent( eMove );
+                                }
+                            }
                         }
                         // System.out.println( f );
                         // System.out.println( anti );
@@ -197,26 +230,31 @@ public class Server extends PApplet implements Runnable {
                 if ( currentT1 != time.getCurrentTime() ) {
                     currentT1 = time.getCurrentTime();
                     long currentRT = 0;
-                    if (eventM.recording ||  eventM.replay ) {
-                    	currentRT = replayTime.getCurrentTime();
+                    if ( eventM.recording || eventM.replay ) {
+                        currentRT = replayTime.getCurrentTime();
                     }
                     if ( input_streams.size() >= 1 ) {
-                    	if ( eventM.replay ) {
-                    		for ( int i = 0; i < game_objects.size(); i++ ) {
-                                game_objects.get( i ).update(currentRT);
+                        if ( eventM.replay ) {
+                            for ( int i = 0; i < game_objects.size(); i++ ) {
+                                game_objects.get( i ).update( currentRT );
                             }
-                    		eventM.handleReplayEvents(currentRT);
+                            System.out.println( eventM.recordBuffer.size() );
+                            System.out.println( "Time: " + currentRT );
+                            eventM.handleReplayEvents( currentRT );
+                            System.out.println( eventM.recordBuffer.size() );
                         }
-                        if (!eventM.replay){
-                        	for ( int i = 0; i < game_objects.size(); i++ ) {
-                                game_objects.get( i ).update(currentT1);
+                        if ( !eventM.replay ) {
+                            for ( int i = 0; i < game_objects.size(); i++ ) {
+                                game_objects.get( i ).update( currentT1 );
                             }
-                        	if (eventM.recording) {
-                        		eventM.handleEventsNow( currentT1, currentRT );
-                        	}
-                        	else {
-                        		eventM.handleEventsNow( currentT1, 0 );
-                        	}
+                            if ( eventM.recording ) {
+                                eventM.handleEventsNow( currentT1, currentRT );
+                                System.out.println( eventM.recordBuffer.size() );
+                                System.out.println( currentRT );
+                            }
+                            else {
+                                eventM.handleEventsNow( currentT1, 0 );
+                            }
                         }
 
                     }

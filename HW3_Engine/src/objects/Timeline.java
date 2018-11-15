@@ -2,7 +2,6 @@ package objects;
 
 import java.io.Serializable;
 
-import main.Server;
 import processing.core.PApplet;
 
 public class Timeline implements TimelineI, Serializable, Renderable {
@@ -61,7 +60,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
     @Override
     public long getCurrentTime () {
         if ( paused ) {
-            return ( pauseStart - startTime - pausedTime ) / tic;
+            return ( ( pauseStart - startTime ) / tic ) - pausedTime;
         }
         long elapse;
         if ( anchorTime ) {
@@ -70,7 +69,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         else {
             elapse = System.currentTimeMillis() - timesincelastchange;
         }
-        long r = ( elapse - pausedTime ) / tic;
+        long r = ( elapse / tic ) - pausedTime;
         r += elapsed;
         return r;
     }
@@ -87,7 +86,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
     @Override
     public void unpause () {
         if ( paused ) {
-            pausedTime += System.currentTimeMillis() - pauseStart;
+            pausedTime += ( System.currentTimeMillis() - pauseStart ) / this.tic;
             paused = false;
         }
     }
@@ -103,6 +102,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
         startTime = optionalAnchor.getCurrentTime();
         timesincelastchange = startTime;
         elapsed = 0;
+        pausedTime = 0;
     }
 
     @Override
@@ -117,7 +117,7 @@ public class Timeline implements TimelineI, Serializable, Renderable {
     public void doubleTime () {
         if ( this.tic != doubleTime ) {
             long t = System.currentTimeMillis() - timesincelastchange;
-            elapsed += ( t - pausedTime ) / doubleTime;
+            elapsed += ( t - pausedTime ) / this.tic;
             timesincelastchange = System.currentTimeMillis();
             this.tic = doubleTime;
         }
@@ -128,29 +128,30 @@ public class Timeline implements TimelineI, Serializable, Renderable {
     public void halfTime () {
         if ( this.tic != halfTime ) {
             long t = System.currentTimeMillis() - timesincelastchange;
-            elapsed += ( t - pausedTime ) / halfTime;
+            elapsed += ( t - pausedTime ) / this.tic;
             timesincelastchange = System.currentTimeMillis();
             this.tic = halfTime;
-        }
-        if ( Server.replayInit == 1 ) {
-            Server.replayInit = 0;
-            Server.eventM.startReplay();
         }
 
     }
 
+    @Override
     public void normalTime () {
         if ( this.tic != normalTime ) {
             long t = System.currentTimeMillis() - timesincelastchange;
-            elapsed += ( t - pausedTime ) / normalTime;
+            elapsed += ( t - pausedTime ) / this.tic;
             timesincelastchange = System.currentTimeMillis();
-            // long t = System.currentTimeMillis() - startTime;
-            // elapsed += ( t - pausedTime ) / normalTime;
             this.tic = normalTime;
         }
-        if ( Server.replayInit == 1 ) {
-            Server.replayInit = 0;
-            Server.eventM.startReplay();
+    }
+
+    @Override
+    public void setTic ( int tic ) {
+        if ( this.tic != tic ) {
+            long t = System.currentTimeMillis() - timesincelastchange;
+            elapsed += ( t - pausedTime ) / this.tic;
+            timesincelastchange = System.currentTimeMillis();
+            this.tic = tic;
         }
     }
 

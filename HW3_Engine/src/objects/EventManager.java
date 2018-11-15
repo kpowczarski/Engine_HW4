@@ -39,27 +39,27 @@ public class EventManager implements Serializable {
     }
 
     public void startReplay () {
-        Server.replayTime.startA();
+        // Server.replayTime.startA();
         for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-        	Server.game_objects.get( i ).saveFinalState();
+            Server.game_objects.get( i ).saveFinalState();
             Server.game_objects.get( i ).teleportStartReplay();
         }
-        Server.pausedInit = false;
+
     }
 
-    public void handleReplayEvents (long time) {
-        //long time = Server.replayTime.getCurrentTime();
-    	if (recordBuffer.peek() == null) {
-    		replay = false;
-    		Server.replay = 0;
-    		//Server.time.normalTime();
-    		for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-            	Server.game_objects.get( i ).restoreFinalState();
+    public void handleReplayEvents ( long time ) {
+        // long time = Server.replayTime.getCurrentTime();
+        if ( recordBuffer.peek() == null ) {
+            replay = false;
+            Server.replay = 0;
+            Server.time.normalTime();
+            for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+                Server.game_objects.get( i ).restoreFinalState();
             }
-    	}
+        }
         while ( recordBuffer.peek() != null && recordBuffer.peek().timestamp <= time ) {
-        	Event curE = recordBuffer.poll();
-        	if ( curE.type == Events.DEATH ) {
+            Event curE = recordBuffer.poll();
+            if ( curE.type == Events.DEATH ) {
                 Player p = (Player) curE.ob1;
                 p.handleDeathEvent();
             }
@@ -75,11 +75,11 @@ public class EventManager implements Serializable {
                 curE.ob1.handleMovement( curE.optionalArg1, curE.optionalArg2 );
             }
             else if ( curE.type == Events.STOPRECORD ) {
-            	replay = false;
-        		Server.replay = 0;
-        		//Server.time.normalTime();
-        		for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-                	Server.game_objects.get( i ).restoreFinalState();
+                replay = false;
+                Server.replay = 0;
+                Server.time.normalTime();
+                for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+                    Server.game_objects.get( i ).restoreFinalState();
                 }
             }
 
@@ -111,7 +111,7 @@ public class EventManager implements Serializable {
             }
             else if ( curE.type == Events.RECORD ) {
                 recording = true;
-                Server.replayTime = new Timeline( 15, Server.time );
+                Server.replayTime = new Timeline( 1, Server.time );
                 curE.timestamp = Server.replayTime.getCurrentTime();
                 addEventToBuffer( curE );
                 Server.recording = 1;
@@ -122,11 +122,10 @@ public class EventManager implements Serializable {
             else if ( curE.type == Events.STOPRECORD ) {
                 recording = false;
                 Server.time.pause();
-                curE.timestamp = Server.replayTime.getCurrentTime();
+                curE.timestamp = rtime;
                 addEventToBuffer( curE );
                 Server.recording = 0;
                 Server.pausedInit = true;
-                replay = true;
                 Server.replayInit = 1;
                 Server.replay = 1;
 
