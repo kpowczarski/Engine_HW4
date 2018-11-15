@@ -131,6 +131,11 @@ public class Client extends PApplet {
             this.textSize( 20 );
             this.text( "Recording", 100, 30 );
         }
+        if ( pause == 1 ) {
+            this.fill( 255 );
+            this.textSize( 20 );
+            this.text( "Paused", 20, 30 );
+        }
         if ( replayInit == 1 ) {
             this.fill( 255 );
             this.textSize( 20 );
