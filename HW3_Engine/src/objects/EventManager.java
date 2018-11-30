@@ -61,7 +61,10 @@ public class EventManager implements Serializable {
             Event curE = recordBuffer.poll();
             if ( curE.type == Events.DEATH ) {
                 Player p = (Player) curE.ob1;
-                p.handleDeathEvent();
+                ScriptManager.loadScript( "scripts/change_death_options.js" );
+                ScriptManager.bindArgument( "player", p );
+                ScriptManager.executeScript();
+                // p.handleDeathEvent();
             }
             else if ( curE.type == Events.SPAWN ) {
                 Player pS = (Player) curE.ob1;
@@ -96,7 +99,10 @@ public class EventManager implements Serializable {
             }
             if ( curE.type == Events.DEATH ) {
                 Player p = (Player) curE.ob1;
-                p.handleDeathEvent();
+                ScriptManager.loadScript( "scripts/change_death_options.js" );
+                ScriptManager.bindArgument( "player", p );
+                ScriptManager.executeScript();
+                // p.handleDeathEvent();
             }
             else if ( curE.type == Events.SPAWN ) {
                 Player pS = (Player) curE.ob1;

@@ -115,16 +115,28 @@ public class Player extends GameObject implements Renderable {
         this.rect.x += this.velx;
     }
 
-    public void handleDeathEvent () {
-        Spawnpoint s = spawnlist.get( GUID % 3 );
-        this.rect.x = s.x;
-        this.rect.y = s.y;
+    public void handleDeathEvent ( boolean d, int x, int y ) {
+        if ( d ) {
+            Spawnpoint s = spawnlist.get( GUID % 3 );
+            this.rect.x = s.x;
+            this.rect.y = s.y;
+        }
+        else {
+            this.rect.x = x;
+            this.rect.y = y;
+        }
     }
 
     public void handleSpawnEvent () {
         Spawnpoint s = spawnlist.get( GUID % 3 );
         this.rect.x = s.x;
         this.rect.y = s.y;
+    }
+
+    public void changeColor ( int r, int g, int b ) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
     }
 
 }

@@ -16,6 +16,7 @@ import objects.Ground;
 import objects.ObjectInputStreamId;
 import objects.Platform;
 import objects.Player;
+import objects.ScriptManager;
 import objects.Timeline;
 import processing.core.PApplet;
 
@@ -42,7 +43,7 @@ public class Server extends PApplet implements Runnable {
 
     public Server () {
     }
-    
+
     @Override
     public void settings () {
         size( 100, 100 );
@@ -193,6 +194,11 @@ public class Server extends PApplet implements Runnable {
                                     // game_objects.get( i ).handleMovement( f,
                                     // anti
                                     // );
+                                    if ( index == 0 ) {
+                                        ScriptManager.loadScript( "scripts/change_color_P1.js" );
+                                        ScriptManager.bindArgument( "player", game_objects.get( i ) );
+                                        ScriptManager.executeScript();
+                                    }
                                     Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
                                             time.getCurrentTime() );
                                     eventM.addEvent( eMove );
