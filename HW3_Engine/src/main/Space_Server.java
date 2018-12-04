@@ -9,7 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import objects.Deathzone;
 import objects.Event;
-import objects.EventManager;
+import objects.EventManagerSpace;
 import objects.Events;
 import objects.GameObject;
 import objects.Ground;
@@ -31,7 +31,7 @@ public class Space_Server extends PApplet implements Runnable {
     public static ArrayList<GameObject>                      game_objects;
     public static ArrayList<String>                          pause;
     public static int                                        recordA;
-    public static EventManager                               eventM;
+    public static EventManagerSpace                               eventM;
     public static Timeline                                   time;
     public static Timeline                                   replayTime;
     public static int                                        recording  = 0;
@@ -73,7 +73,7 @@ public class Space_Server extends PApplet implements Runnable {
     }
 
     public static void main ( final String[] args ) {
-        PApplet.main( "main.Server" );
+        PApplet.main( "main.Space_Server" );
         final Ground g = new Ground();
         final Platform plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
         plat1.setMovingSettings( 800, 100, 0, 0, 2, 0 );
@@ -97,7 +97,7 @@ public class Space_Server extends PApplet implements Runnable {
         game_objects.add( plat6 );
         game_objects.add( plat7 );
         game_objects.add( d );
-        eventM = new EventManager( game_objects );
+        eventM = new EventManagerSpace( game_objects );
         time = new Timeline( 10 );
         pause = new ArrayList<String>();
         recordA = -1;
@@ -110,7 +110,7 @@ public class Space_Server extends PApplet implements Runnable {
         input_streams = new CopyOnWriteArrayList<ObjectInputStreamId>();
         output_streams = new CopyOnWriteArrayList<ObjectOutputStream>();
 
-        final Server server = new Server();
+        final Space_Server server = new Space_Server();
         ( new Thread( server ) ).start();
         long currentT1 = time.getCurrentTime();
         while ( true ) {

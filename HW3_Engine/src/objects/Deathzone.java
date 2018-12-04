@@ -3,6 +3,7 @@ package objects;
 import java.awt.Rectangle;
 
 import main.Server;
+import main.Space_Server;
 import processing.core.PApplet;
 /**
  * 
@@ -31,7 +32,12 @@ public class Deathzone extends GameObject {
     @Override
     public void handleCollision ( GameObject o ) {
     	Event e = new Event(Events.DEATH, o, Server.time.getCurrentTime());
-    	Server.eventM.addEvent(e);
+    	if (Server.eventM != null) {
+    		Server.eventM.addEvent(e);
+    	}
+    	else {
+    		Space_Server.eventM.addEvent(e);
+    	}
 //        if ( o.type.equals( "player" ) ) {
 //            Player p = (Player) o;
 //            Spawnpoint s = p.spawnlist.get( p.GUID % 3 );

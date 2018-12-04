@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 
 import main.Server;
+import main.Space_Server;
 
 /**
  *
@@ -67,22 +68,37 @@ public abstract class GameObject implements Renderable, Serializable {
         // p.player.y = GameLoop.g.ground.y - 32;
         // return true;
         // }
-        for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-            final GameObject go = Server.game_objects.get( i );
-            if ( go.GUID != this.GUID ) {
-                if ( this.rect.intersects( go.getRect() ) ) {
-                    // go.handleCollision( this );
-                    if ( Server.eventM.replay ) {
-                        Event e = new Event( Events.COLLISION, go, this, Server.replayTime.getCurrentTime() );
-                        Server.eventM.addEventToBuffer( e );
+    	if (Server.eventM != null) {
+	        for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+	            final GameObject go = Server.game_objects.get( i );
+	            if ( go.GUID != this.GUID ) {
+	                if ( this.rect.intersects( go.getRect() ) ) {
+	                    // go.handleCollision( this );
+	                    if ( Server.eventM.replay ) {
+	                        Event e = new Event( Events.COLLISION, go, this, Server.replayTime.getCurrentTime() );
+	                        Server.eventM.addEventToBuffer( e );
+	                        return true;
+	                    }
+	                    Event e = new Event( Events.COLLISION, go, this, time );
+	                    Server.eventM.addEvent( e );
+	                    return true;
+	                }
+	            }
+	        }
+    	}
+    	else {
+    		for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                final GameObject go = Space_Server.game_objects.get( i );
+                if ( go.GUID != this.GUID ) {
+                    if ( this.rect.intersects( go.getRect() ) ) {
+                        // go.handleCollision( this );
+                        Event e = new Event( Events.COLLISION, go, this, time );
+                        Space_Server.eventM.addEvent( e );
                         return true;
                     }
-                    Event e = new Event( Events.COLLISION, go, this, time );
-                    Server.eventM.addEvent( e );
-                    return true;
                 }
             }
-        }
+    	}
         return false;
 
     }
