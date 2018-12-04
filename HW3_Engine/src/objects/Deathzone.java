@@ -3,8 +3,8 @@ package objects;
 import java.awt.Rectangle;
 
 import main.Server;
-import main.Space_Server;
 import processing.core.PApplet;
+import space_game.Space_Server;
 /**
  * 
  * @author Kevin Owczarski

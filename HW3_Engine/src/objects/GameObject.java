@@ -4,7 +4,7 @@ import java.awt.Rectangle;
 import java.io.Serializable;
 
 import main.Server;
-import main.Space_Server;
+import space_game.Space_Server;
 
 /**
  *

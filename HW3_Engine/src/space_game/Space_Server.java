@@ -1,4 +1,4 @@
-package main;
+package space_game;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import main.Server;
 import objects.Deathzone;
 import objects.Event;
 import objects.EventManagerSpace;
@@ -31,7 +32,7 @@ public class Space_Server extends PApplet implements Runnable {
     public static ArrayList<GameObject>                      game_objects;
     public static ArrayList<String>                          pause;
     public static int                                        recordA;
-    public static EventManagerSpace                               eventM;
+    public static EventManagerSpace                          eventM;
     public static Timeline                                   time;
     public static Timeline                                   replayTime;
     public static int                                        recording  = 0;
@@ -73,7 +74,7 @@ public class Space_Server extends PApplet implements Runnable {
     }
 
     public static void main ( final String[] args ) {
-        PApplet.main( "main.Space_Server" );
+        PApplet.main( "space_game.Space_Server" );
         final Ground g = new Ground();
         final Platform plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
         plat1.setMovingSettings( 800, 100, 0, 0, 2, 0 );

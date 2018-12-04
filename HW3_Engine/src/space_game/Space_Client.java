@@ -1,4 +1,4 @@
-package main;
+package space_game;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -41,7 +41,7 @@ public class Space_Client extends PApplet {
             input_stream = new ObjectInputStream( s.getInputStream() );
 
             System.out.println( "Connected" );
-            PApplet.main( "main.Space_Client" );
+            PApplet.main( "space_game.Space_Client" );
 
         }
         catch ( final IOException e ) {
@@ -167,20 +167,20 @@ public class Space_Client extends PApplet {
         }
     }
 
-//    public int keyPressMove () {
-//        if ( this.keyPressed == true ) {
-//            if ( this.key == 'a' ) {
-//                return 1;
-//            }
-//            else if ( this.key == 'd' ) {
-//                return 2;
-//            }
-//            else if ( this.key == ' ' ) {
-//                return 3;
-//            }
-//        }
-//        return 0;
-//    }
+    // public int keyPressMove () {
+    // if ( this.keyPressed == true ) {
+    // if ( this.key == 'a' ) {
+    // return 1;
+    // }
+    // else if ( this.key == 'd' ) {
+    // return 2;
+    // }
+    // else if ( this.key == ' ' ) {
+    // return 3;
+    // }
+    // }
+    // return 0;
+    // }
 
     @Override
     public void keyPressed () {
@@ -200,38 +200,38 @@ public class Space_Client extends PApplet {
         else if ( key == 'u' ) {
             pause = 0;
         }
-//        else if ( key == 'r' ) {
-//            record = 1;
-//            // speed = 1;
-//        }
-//        else if ( key == 't' ) {
-//            record = 0;
-//            // speed = -1;
-//        }
-//        else if ( key == '1' ) {
-//            if ( replay == 1 || replayInit == 1 ) {
-//                speed = 0;
-//            }
-//            else {
-//                speed = -1;
-//            }
-//        }
-//        else if ( key == '2' ) {
-//            if ( replay == 1 || replayInit == 1 ) {
-//                speed = 1;
-//            }
-//            else {
-//                speed = -1;
-//            }
-//        }
-//        else if ( key == '3' ) {
-//            if ( replay == 1 || replayInit == 1 ) {
-//                speed = 2;
-//            }
-//            else {
-//                speed = -1;
-//            }
-//        }
+        // else if ( key == 'r' ) {
+        // record = 1;
+        // // speed = 1;
+        // }
+        // else if ( key == 't' ) {
+        // record = 0;
+        // // speed = -1;
+        // }
+        // else if ( key == '1' ) {
+        // if ( replay == 1 || replayInit == 1 ) {
+        // speed = 0;
+        // }
+        // else {
+        // speed = -1;
+        // }
+        // }
+        // else if ( key == '2' ) {
+        // if ( replay == 1 || replayInit == 1 ) {
+        // speed = 1;
+        // }
+        // else {
+        // speed = -1;
+        // }
+        // }
+        // else if ( key == '3' ) {
+        // if ( replay == 1 || replayInit == 1 ) {
+        // speed = 2;
+        // }
+        // else {
+        // speed = -1;
+        // }
+        // }
     }
 
     @Override

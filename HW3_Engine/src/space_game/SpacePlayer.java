@@ -1,9 +1,11 @@
-package objects;
+package space_game;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import main.Client;
+import objects.GameObject;
+import objects.Spawnpoint;
 import processing.core.PApplet;
 
 public class SpacePlayer extends GameObject {
