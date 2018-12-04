@@ -1,11 +1,17 @@
-package objects;
+package space_game;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 import main.Server;
-import space_game.Space_Server;
+import objects.Event;
+import objects.EventCompare;
+import objects.Events;
+import objects.GameObject;
+import objects.Player;
+import objects.ScriptManager;
+import objects.Timeline;
 
 public class EventManagerSpace implements Serializable {
 

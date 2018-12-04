@@ -5,10 +5,10 @@ import java.awt.Rectangle;
 import main.Server;
 import processing.core.PApplet;
 import space_game.Space_Server;
+
 /**
- * 
- * @author Kevin Owczarski
- * Encompasses deathzone object's variables
+ *
+ * @author Kevin Owczarski Encompasses deathzone object's variables
  *
  */
 public class Deathzone extends GameObject {
@@ -31,19 +31,20 @@ public class Deathzone extends GameObject {
 
     @Override
     public void handleCollision ( GameObject o ) {
-    	Event e = new Event(Events.DEATH, o, Server.time.getCurrentTime());
-    	if (Server.eventM != null) {
-    		Server.eventM.addEvent(e);
-    	}
-    	else {
-    		Space_Server.eventM.addEvent(e);
-    	}
-//        if ( o.type.equals( "player" ) ) {
-//            Player p = (Player) o;
-//            Spawnpoint s = p.spawnlist.get( p.GUID % 3 );
-//            p.rect.x = s.x;
-//            p.rect.y = s.y;
-//        }
+        if ( Server.eventM != null ) {
+            Event e = new Event( Events.DEATH, o, Server.time.getCurrentTime() );
+            Server.eventM.addEvent( e );
+        }
+        else {
+            Event e = new Event( Events.DEATH, o, Space_Server.time.getCurrentTime() );
+            Space_Server.eventM.addEvent( e );
+        }
+        // if ( o.type.equals( "player" ) ) {
+        // Player p = (Player) o;
+        // Spawnpoint s = p.spawnlist.get( p.GUID % 3 );
+        // p.rect.x = s.x;
+        // p.rect.y = s.y;
+        // }
     }
 
 }

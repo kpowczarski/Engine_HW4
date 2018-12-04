@@ -10,7 +10,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import main.Server;
 import objects.Deathzone;
 import objects.Event;
-import objects.EventManagerSpace;
 import objects.Events;
 import objects.GameObject;
 import objects.Ground;
