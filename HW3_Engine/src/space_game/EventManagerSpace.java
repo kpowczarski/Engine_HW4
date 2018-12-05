@@ -95,6 +95,7 @@ public class EventManagerSpace implements Serializable {
     }
 
     public void handleEventsNow ( long time, long rtime ) {
+        boolean moved = false;
         while ( events.peek() != null && events.peek().timestamp <= time ) {
             Event curE = events.poll();
             if ( recording && curE.type != Events.STOPRECORD ) {
@@ -110,11 +111,28 @@ public class EventManagerSpace implements Serializable {
                         }
                     }
                 }
-                SpacePlayer p = (SpacePlayer) curE.ob1;
-                ScriptManager.loadScript( "scripts/change_death_options.js" );
-                ScriptManager.bindArgument( "player", p );
-                ScriptManager.executeScript();
-                // p.handleDeathEvent();
+                if ( curE.ob1.type.equals( "spaceplayer" ) ) {
+                    SpacePlayer p = (SpacePlayer) curE.ob1;
+                    ScriptManager.loadScript( "scripts/change_death_options.js" );
+                    ScriptManager.bindArgument( "player", p );
+                    ScriptManager.executeScript();
+                    // p.handleDeathEvent();
+                }
+                else {
+                    Alien a = (Alien) curE.ob1;
+                    a.handleDeathEvent();
+                }
+            }
+            else if ( curE.type == Events.ALIENSMOVEDOWN ) {
+                if ( !moved ) {
+                    for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                        if ( Space_Server.game_objects.get( i ).type.equals( "alien" ) ) {
+                            Space_Server.game_objects.get( i ).rect.y += 64;
+                            Space_Server.game_objects.get( i ).velx *= -1;
+                            moved = true;
+                        }
+                    }
+                }
             }
             else if ( curE.type == Events.SPAWN ) {
                 SpacePlayer pS = (SpacePlayer) curE.ob1;

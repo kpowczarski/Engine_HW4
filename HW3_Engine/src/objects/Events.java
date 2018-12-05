@@ -14,7 +14,9 @@ public enum Events {
 
     STOPRECORD ( 5 ),
 
-    SHOOT ( 6 )
+    SHOOT ( 6 ),
+
+    ALIENSMOVEDOWN ( 7 )
 
     ;
 

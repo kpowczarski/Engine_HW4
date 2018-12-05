@@ -22,10 +22,10 @@ public class Bullet extends GameObject {
         render = true;
         this.evil = evil;
         if ( evil ) {
-            this.vely = 5;
+            this.vely = 8;
         }
         else {
-            this.vely = -5;
+            this.vely = -8;
         }
         r = 255;
         g = 255;
