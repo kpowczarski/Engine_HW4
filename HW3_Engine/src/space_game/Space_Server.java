@@ -70,42 +70,7 @@ public class Space_Server extends PApplet implements Runnable {
     public static void main ( final String[] args ) {
         PApplet.main( "space_game.Space_Server" );
         game_objects = new ArrayList<GameObject>();
-        Alien a1 = new Alien( 356, 128, true );
-        Alien a2 = new Alien( 500, 128, false );
-        Alien a3 = new Alien( 648, 128, true );
-        Alien a4 = new Alien( 796, 128, false );
-        Alien a5 = new Alien( 944, 128, true );
-        Alien a6 = new Alien( 1092, 128, false );
-        game_objects.add( a1 );
-        game_objects.add( a2 );
-        game_objects.add( a3 );
-        game_objects.add( a4 );
-        game_objects.add( a5 );
-        game_objects.add( a6 );
-        Alien a1r2 = new Alien( 356, 192, false );
-        Alien a2r2 = new Alien( 500, 192, true );
-        Alien a3r2 = new Alien( 648, 192, false );
-        Alien a4r2 = new Alien( 796, 192, true );
-        Alien a5r2 = new Alien( 944, 192, false );
-        Alien a6r2 = new Alien( 1092, 192, true );
-        game_objects.add( a1r2 );
-        game_objects.add( a2r2 );
-        game_objects.add( a3r2 );
-        game_objects.add( a4r2 );
-        game_objects.add( a5r2 );
-        game_objects.add( a6r2 );
-        Alien a1r3 = new Alien( 356, 256, true );
-        Alien a2r3 = new Alien( 500, 256, false );
-        Alien a3r3 = new Alien( 648, 256, true );
-        Alien a4r3 = new Alien( 796, 256, false );
-        Alien a5r3 = new Alien( 944, 256, true );
-        Alien a6r3 = new Alien( 1092, 256, false );
-        game_objects.add( a1r3 );
-        game_objects.add( a2r3 );
-        game_objects.add( a3r3 );
-        game_objects.add( a4r3 );
-        game_objects.add( a5r3 );
-        game_objects.add( a6r3 );
+        setupEnemies();
         eventM = new EventManagerSpace( game_objects );
         time = new Timeline( 10 );
         pause = new ArrayList<String>();
@@ -298,6 +263,45 @@ public class Space_Server extends PApplet implements Runnable {
             // Thread.sleep( 2000 );
         }
 
+    }
+
+    public static void setupEnemies () {
+        Alien a1 = new Alien( 356, 128, true );
+        Alien a2 = new Alien( 500, 128, false );
+        Alien a3 = new Alien( 648, 128, true );
+        Alien a4 = new Alien( 796, 128, false );
+        Alien a5 = new Alien( 944, 128, true );
+        Alien a6 = new Alien( 1092, 128, false );
+        game_objects.add( a1 );
+        game_objects.add( a2 );
+        game_objects.add( a3 );
+        game_objects.add( a4 );
+        game_objects.add( a5 );
+        game_objects.add( a6 );
+        Alien a1r2 = new Alien( 356, 192, false );
+        Alien a2r2 = new Alien( 500, 192, true );
+        Alien a3r2 = new Alien( 648, 192, false );
+        Alien a4r2 = new Alien( 796, 192, true );
+        Alien a5r2 = new Alien( 944, 192, false );
+        Alien a6r2 = new Alien( 1092, 192, true );
+        game_objects.add( a1r2 );
+        game_objects.add( a2r2 );
+        game_objects.add( a3r2 );
+        game_objects.add( a4r2 );
+        game_objects.add( a5r2 );
+        game_objects.add( a6r2 );
+        Alien a1r3 = new Alien( 356, 256, true );
+        Alien a2r3 = new Alien( 500, 256, false );
+        Alien a3r3 = new Alien( 648, 256, true );
+        Alien a4r3 = new Alien( 796, 256, false );
+        Alien a5r3 = new Alien( 944, 256, true );
+        Alien a6r3 = new Alien( 1092, 256, false );
+        game_objects.add( a1r3 );
+        game_objects.add( a2r3 );
+        game_objects.add( a3r3 );
+        game_objects.add( a4r3 );
+        game_objects.add( a5r3 );
+        game_objects.add( a6r3 );
     }
 
 }

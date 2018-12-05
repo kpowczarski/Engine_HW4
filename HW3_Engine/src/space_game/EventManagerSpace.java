@@ -140,6 +140,9 @@ public class EventManagerSpace implements Serializable {
                     if ( alienCount == 1 ) {
                         Alien.alienMovementDelta = 5;
                     }
+                    if ( alienCount == 0 ) {
+                        Space_Server.setupEnemies();
+                    }
                     a.handleDeathEvent();
                 }
             }
