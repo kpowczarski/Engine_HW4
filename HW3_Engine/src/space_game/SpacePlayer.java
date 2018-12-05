@@ -108,11 +108,16 @@ public class SpacePlayer extends GameObject {
         if ( o.type.equals( "b" ) ) {
             Bullet b = (Bullet) o;
             if ( b.evil ) {
-                Event e = new Event( Events.DEATH, this, o, Space_Server.time.getCurrentTime() );
+                Event e = new Event( Events.GAMEOVER, this, o, Space_Server.time.getCurrentTime() );
                 Space_Server.eventM.addEvent( e );
                 b.render = false;
             }
         }
+    }
+    public void changeColor ( int r, int g, int b ) {
+        this.r = r;
+        this.g = g;
+        this.b = b;
     }
 
 }

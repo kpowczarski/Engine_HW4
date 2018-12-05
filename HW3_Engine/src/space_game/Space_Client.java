@@ -32,6 +32,7 @@ public class Space_Client extends PApplet {
     public int                           record;
     public int                           recording;
     public int                           replayInit;
+    public int gameover;
     public int                           replay;
     public int                           backgroundColor;
 
@@ -74,6 +75,7 @@ public class Space_Client extends PApplet {
         record = 0;
         recording = 0;
         replayInit = 0;
+        gameover = 0;
         replay = 0;
         backgroundColor = 1;
     }
@@ -112,6 +114,7 @@ public class Space_Client extends PApplet {
             recording = input_stream.readInt();
             replayInit = input_stream.readInt();
             replay = input_stream.readInt();
+            gameover = input_stream.readInt();
 
         }
         catch ( final IOException | ClassNotFoundException e ) {
@@ -144,6 +147,18 @@ public class Space_Client extends PApplet {
             this.textSize( 20 );
             this.text( "Replay Speed", 540, 410 );
             this.text( "Press 1 for half speed, 2 for normal, and 3 for double", 350, 450 );
+        }
+        if ( gameover == 1 ) {
+            this.fill( 255 );
+            this.textSize( 20 );
+            this.text( "Game Over", 580, 410 );
+            this.text( "Press Space to restart", 520, 450 );
+        }
+        if ( gameover == 2 ) {
+            this.fill( 255 );
+            this.textSize( 20 );
+            this.text( "Victory!", 570, 410 );
+            this.text( "Press Space to continue", 500, 450 );
         }
         if ( replay == 1 ) {
             backgroundColor = 150;

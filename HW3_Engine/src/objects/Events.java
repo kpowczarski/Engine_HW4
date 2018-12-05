@@ -13,10 +13,12 @@ public enum Events {
     SPAWN ( 4 ),
 
     STOPRECORD ( 5 ),
+    
+    GAMEOVER( 6 ),
 
-    SHOOT ( 6 ),
+    SHOOT ( 7 ),
 
-    ALIENSMOVEDOWN ( 7 )
+    ALIENSMOVEDOWN ( 8 )
 
     ;
 

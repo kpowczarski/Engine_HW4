@@ -1,6 +1,7 @@
 package space_game;
 
 import java.awt.Rectangle;
+import java.util.Random;
 
 import objects.Event;
 import objects.Events;
@@ -12,16 +13,23 @@ public class Alien extends GameObject {
     private static final long serialVersionUID   = 1L;
 
     public static int         alienMovementDelta = 100;
+    
+    int alienBulletDelta;
 
     int                       r;
     int                       g;
     int                       b;
     boolean                   render;
     long                      moveTime;
+    long bulletTime;
 
     public Alien ( int x, int y, boolean gr ) {
         this.type = "alien";
         moveTime = 0;
+        Random rand = new Random();
+        int n = rand.nextInt(500) + 300;
+        alienBulletDelta = n;
+        bulletTime = n;
         render = true;
         this.velx = 10;
         if ( gr ) {
@@ -52,6 +60,11 @@ public class Alien extends GameObject {
 
     @Override
     public void update ( long time ) {
+    	if (time > bulletTime) {
+    		bulletTime = time + alienBulletDelta;
+    		Event r = new Event( Events.SHOOT, this, time );
+            Space_Server.eventM.addEvent( r );
+    	}
         if ( time > moveTime ) {
             moveTime = time + alienMovementDelta;
             this.rect.x += this.velx;
@@ -69,6 +82,10 @@ public class Alien extends GameObject {
                 // this.rect.x = this.rect.x + 2;
                 // this.rect.y += 64;
                 // this.velx *= -1;
+            }
+            if (this.rect.y > 800) {
+            	Event e = new Event( Events.GAMEOVER, this, Space_Server.time.getCurrentTime() );
+                Space_Server.eventM.addEvent( e );           	
             }
         }
         // collides( time );

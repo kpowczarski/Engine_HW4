@@ -11,6 +11,7 @@ import objects.Event;
 import objects.Events;
 import objects.GameObject;
 import objects.ObjectInputStreamId;
+import objects.ScriptManager;
 import objects.Timeline;
 import processing.core.PApplet;
 
@@ -31,6 +32,7 @@ public class Space_Server extends PApplet implements Runnable {
     public static Timeline                                   replayTime;
     public static int                                        recording  = 0;
     public static int                                        replayInit = 0;
+    public static int 										 gameover = 0;
     public static int                                        replay     = 0;
     public static boolean                                    pausedInit = false;
     private static ServerSocket                              ss;
@@ -70,9 +72,9 @@ public class Space_Server extends PApplet implements Runnable {
     public static void main ( final String[] args ) {
         PApplet.main( "space_game.Space_Server" );
         game_objects = new ArrayList<GameObject>();
-        setupEnemies();
-        eventM = new EventManagerSpace( game_objects );
-        time = new Timeline( 10 );
+        setupGame();
+//        eventM = new EventManagerSpace( game_objects );
+//        time = new Timeline( 10 );
         pause = new ArrayList<String>();
         recordA = -1;
         try {
@@ -169,11 +171,23 @@ public class Space_Server extends PApplet implements Runnable {
                                     // game_objects.get( i ).handleMovement( f,
                                     // anti
                                     // );
-                                    if ( shoot == 1 && time.getCurrentTime() > shootTime ) {
+                                	if ( index == 0 ) {
+                                        ScriptManager.loadScript( "scripts/change_color_P1.js" );
+                                        ScriptManager.bindArgument( "player", game_objects.get( i ) );
+                                        ScriptManager.executeScript();
+                                    }
+                                    if ( shoot == 1 && time.getCurrentTime() > shootTime && gameover != 1) {
                                         shootTime = time.getCurrentTime() + 50;
                                         Event r = new Event( Events.SHOOT, game_objects.get( i ),
                                                 time.getCurrentTime() );
                                         eventM.addEvent( r );
+                                    }
+                                    else if (shoot == 1 && gameover > 0) {
+                                    	setupGame();
+                                    	gameover = 0;
+                                    	pausedInit = false;
+                                    	shootTime = time.getCurrentTime() + 50;
+                                    	//time.unpause();
                                     }
                                     Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
                                             time.getCurrentTime() );
@@ -250,6 +264,7 @@ public class Space_Server extends PApplet implements Runnable {
                         dout.writeInt( recording );
                         dout.writeInt( replayInit );
                         dout.writeInt( replay );
+                        dout.writeInt(gameover);
                         dout.reset();
                     }
                     catch ( final IOException e ) {
@@ -265,7 +280,14 @@ public class Space_Server extends PApplet implements Runnable {
 
     }
 
-    public static void setupEnemies () {
+    public static void setupGame () {
+    	ArrayList<GameObject> tgame_objects = new ArrayList<GameObject>();
+    	for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+            if ( Space_Server.game_objects.get( i ).type.equals("spaceplayer") ) {
+                tgame_objects.add(Space_Server.game_objects.get( i ));
+            }
+        }
+    	game_objects = tgame_objects;
         Alien a1 = new Alien( 356, 128, true );
         Alien a2 = new Alien( 500, 128, false );
         Alien a3 = new Alien( 648, 128, true );
@@ -302,6 +324,9 @@ public class Space_Server extends PApplet implements Runnable {
         game_objects.add( a4r3 );
         game_objects.add( a5r3 );
         game_objects.add( a6r3 );
+        Alien.alienMovementDelta = 100;
+        eventM = new EventManagerSpace( game_objects );
+        time = new Timeline( 10 );
     }
 
 }

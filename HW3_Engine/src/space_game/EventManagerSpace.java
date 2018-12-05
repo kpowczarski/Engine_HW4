@@ -108,7 +108,7 @@ public class EventManagerSpace implements Serializable {
                 // System.out.println( "Added Event to buffer" );
             }
             if ( curE.type == Events.DEATH ) {
-                if ( !recording ) {
+                if ( !recording && curE.ob2 != null) {
                     for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
                         if ( Space_Server.game_objects.get( i ).GUID == curE.ob2.GUID ) {
                             Space_Server.game_objects.remove( i );
@@ -125,6 +125,8 @@ public class EventManagerSpace implements Serializable {
                 else {
                     Alien a = (Alien) curE.ob1;
                     alienCount -= 1;
+                    a.handleDeathEvent();
+                    System.out.println(Space_Server.game_objects.size());
                     if ( alienCount == alienCountInit - 2 ) {
                         Alien.alienMovementDelta = 50;
                     }
@@ -141,9 +143,10 @@ public class EventManagerSpace implements Serializable {
                         Alien.alienMovementDelta = 5;
                     }
                     if ( alienCount == 0 ) {
-                        Space_Server.setupEnemies();
+                    	Space_Server.time.pause();
+                    	Space_Server.pausedInit = true;
+                        Space_Server.gameover = 2;
                     }
-                    a.handleDeathEvent();
                 }
             }
             else if ( curE.type == Events.ALIENSMOVEDOWN ) {
@@ -157,6 +160,17 @@ public class EventManagerSpace implements Serializable {
                     }
                 }
             }
+            else if (curE.type == Events.GAMEOVER) {
+            	Space_Server.time.pause();
+            	Space_Server.pausedInit = true;
+            	for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                    if ( Space_Server.game_objects.get( i ).type.equals("spaceplayer")) {
+                        SpacePlayer p = (SpacePlayer)Space_Server.game_objects.get(i);
+                        p.handleDeathEvent(true, 0, 0);
+                    }
+                }
+            	Space_Server.gameover = 1;
+            }
             else if ( curE.type == Events.SPAWN ) {
                 SpacePlayer pS = (SpacePlayer) curE.ob1;
                 pS.handleSpawnEvent();
@@ -169,8 +183,14 @@ public class EventManagerSpace implements Serializable {
                 curE.ob1.handleMovement( curE.optionalArg1, curE.optionalArg2 );
             }
             else if ( curE.type == Events.SHOOT ) {
-                Bullet b = new Bullet( curE.ob1.rect.x + 30, curE.ob1.rect.y - 17, false );
-                Space_Server.game_objects.add( b );
+            	if (curE.ob1.type.equals("spaceplayer") ) {
+            		Bullet b = new Bullet( curE.ob1.rect.x + 30, curE.ob1.rect.y - 17, false );
+            		Space_Server.game_objects.add( b );
+            	}
+            	else {
+            		Bullet b = new Bullet( curE.ob1.rect.x + 30, curE.ob1.rect.y + 17, true );
+            		Space_Server.game_objects.add( b );
+            	}
             }
             else if ( curE.type == Events.RECORD ) {
                 recording = true;

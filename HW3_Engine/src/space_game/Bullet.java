@@ -46,7 +46,7 @@ public class Bullet extends GameObject {
     @Override
     public void update ( long time ) {
         this.rect.y += this.vely;
-        if ( ( this.y > Space_Client.parentHeight || this.y > Space_Client.parentHeight )
+        if ( ( this.y > Space_Client.parentHeight || this.y < 0 )
                 && !Space_Server.eventM.recording ) {
             for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
                 if ( Space_Server.game_objects.get( i ).GUID == this.GUID ) {
