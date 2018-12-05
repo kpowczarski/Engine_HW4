@@ -53,10 +53,10 @@ public class SpacePlayer extends GameObject {
     public void handleMovement ( int move, int anti ) {
         if ( move != 0 ) {
             if ( move == 1 ) {
-                this.velx = -3;
+                this.velx = -2;
             }
             else if ( move == 2 ) {
-                this.velx = 3;
+                this.velx = 2;
             }
             else if ( move == 3 ) {
                 // jump = true;

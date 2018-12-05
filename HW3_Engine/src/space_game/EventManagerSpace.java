@@ -26,6 +26,10 @@ public class EventManagerSpace implements Serializable {
 
     public boolean              replay           = false;
 
+    public int                  alienCountInit   = 18;
+
+    public int                  alienCount       = 18;
+
     public EventManagerSpace ( ArrayList<GameObject> g ) {
         events = new PriorityQueue<Event>( 10, new EventCompare() );
         recordBuffer = new PriorityQueue<Event>( 50, new EventCompare() );
@@ -120,6 +124,22 @@ public class EventManagerSpace implements Serializable {
                 }
                 else {
                     Alien a = (Alien) curE.ob1;
+                    alienCount -= 1;
+                    if ( alienCount == alienCountInit - 2 ) {
+                        Alien.alienMovementDelta = 50;
+                    }
+                    if ( alienCount == alienCountInit / 2 ) {
+                        Alien.alienMovementDelta = 30;
+                    }
+                    if ( alienCount == 4 ) {
+                        Alien.alienMovementDelta = 20;
+                    }
+                    if ( alienCount == 2 ) {
+                        Alien.alienMovementDelta = 10;
+                    }
+                    if ( alienCount == 1 ) {
+                        Alien.alienMovementDelta = 5;
+                    }
                     a.handleDeathEvent();
                 }
             }

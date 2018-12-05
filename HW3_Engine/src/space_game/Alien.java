@@ -9,7 +9,9 @@ import processing.core.PApplet;
 
 public class Alien extends GameObject {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID   = 1L;
+
+    public static int         alienMovementDelta = 100;
 
     int                       r;
     int                       g;
@@ -51,7 +53,7 @@ public class Alien extends GameObject {
     @Override
     public void update ( long time ) {
         if ( time > moveTime ) {
-            moveTime = time + 100;
+            moveTime = time + alienMovementDelta;
             this.rect.x += this.velx;
             this.rect.x += this.velx;
             if ( this.rect.x + 204 > Space_Client.parentWidth ) {
