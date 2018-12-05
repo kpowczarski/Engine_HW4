@@ -4,12 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-import main.Server;
 import objects.Event;
 import objects.EventCompare;
 import objects.Events;
 import objects.GameObject;
-import objects.Player;
 import objects.ScriptManager;
 import objects.Timeline;
 
@@ -47,9 +45,9 @@ public class EventManagerSpace implements Serializable {
 
     public void startReplay () {
         // Server.replayTime.startA();
-        for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-            Server.game_objects.get( i ).saveFinalState();
-            Server.game_objects.get( i ).teleportStartReplay();
+        for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+            Space_Server.game_objects.get( i ).saveFinalState();
+            Space_Server.game_objects.get( i ).teleportStartReplay();
         }
 
     }
@@ -60,21 +58,21 @@ public class EventManagerSpace implements Serializable {
             replay = false;
             Space_Server.replay = 0;
             Space_Server.time.normalTime();
-            for ( int i = 0; i < Server.game_objects.size(); i++ ) {
+            for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
                 Space_Server.game_objects.get( i ).restoreFinalState();
             }
         }
         while ( recordBuffer.peek() != null && recordBuffer.peek().timestamp <= time ) {
             Event curE = recordBuffer.poll();
             if ( curE.type == Events.DEATH ) {
-                Player p = (Player) curE.ob1;
+                SpacePlayer p = (SpacePlayer) curE.ob1;
                 ScriptManager.loadScript( "scripts/change_death_options.js" );
                 ScriptManager.bindArgument( "player", p );
                 ScriptManager.executeScript();
                 // p.handleDeathEvent();
             }
             else if ( curE.type == Events.SPAWN ) {
-                Player pS = (Player) curE.ob1;
+                SpacePlayer pS = (SpacePlayer) curE.ob1;
                 pS.handleSpawnEvent();
                 Space_Server.game_objects.add( pS );
             }
@@ -86,10 +84,10 @@ public class EventManagerSpace implements Serializable {
             }
             else if ( curE.type == Events.STOPRECORD ) {
                 replay = false;
-                Server.replay = 0;
-                Server.time.normalTime();
-                for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-                    Server.game_objects.get( i ).restoreFinalState();
+                Space_Server.replay = 0;
+                Space_Server.time.normalTime();
+                for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                    Space_Server.game_objects.get( i ).restoreFinalState();
                 }
             }
 
@@ -105,14 +103,21 @@ public class EventManagerSpace implements Serializable {
                 // System.out.println( "Added Event to buffer" );
             }
             if ( curE.type == Events.DEATH ) {
-                Player p = (Player) curE.ob1;
+                if ( !recording ) {
+                    for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                        if ( Space_Server.game_objects.get( i ).GUID == curE.ob2.GUID ) {
+                            Space_Server.game_objects.remove( i );
+                        }
+                    }
+                }
+                SpacePlayer p = (SpacePlayer) curE.ob1;
                 ScriptManager.loadScript( "scripts/change_death_options.js" );
                 ScriptManager.bindArgument( "player", p );
                 ScriptManager.executeScript();
                 // p.handleDeathEvent();
             }
             else if ( curE.type == Events.SPAWN ) {
-                Player pS = (Player) curE.ob1;
+                SpacePlayer pS = (SpacePlayer) curE.ob1;
                 pS.handleSpawnEvent();
                 Space_Server.game_objects.add( pS );
             }
@@ -122,25 +127,29 @@ public class EventManagerSpace implements Serializable {
             else if ( curE.type == Events.MOVEMENT ) {
                 curE.ob1.handleMovement( curE.optionalArg1, curE.optionalArg2 );
             }
+            else if ( curE.type == Events.SHOOT ) {
+                Bullet b = new Bullet( curE.ob1.rect.x + 30, curE.ob1.rect.y - 17, false );
+                Space_Server.game_objects.add( b );
+            }
             else if ( curE.type == Events.RECORD ) {
                 recording = true;
-                Server.replayTime = new Timeline( 1, Server.time );
-                curE.timestamp = Server.replayTime.getCurrentTime();
+                Space_Server.replayTime = new Timeline( 1, Space_Server.time );
+                curE.timestamp = Space_Server.replayTime.getCurrentTime();
                 addEventToBuffer( curE );
-                Server.recording = 1;
-                for ( int i = 0; i < Server.game_objects.size(); i++ ) {
-                    Server.game_objects.get( i ).setReplay();
+                Space_Server.recording = 1;
+                for ( int i = 0; i < Space_Server.game_objects.size(); i++ ) {
+                    Space_Server.game_objects.get( i ).setReplay();
                 }
             }
             else if ( curE.type == Events.STOPRECORD ) {
                 recording = false;
-                Server.time.pause();
+                Space_Server.time.pause();
                 curE.timestamp = rtime;
                 addEventToBuffer( curE );
-                Server.recording = 0;
-                Server.pausedInit = true;
-                Server.replayInit = 1;
-                Server.replay = 1;
+                Space_Server.recording = 0;
+                Space_Server.pausedInit = true;
+                Space_Server.replayInit = 1;
+                Space_Server.replay = 1;
 
             }
         }
@@ -162,4 +171,3 @@ public class EventManagerSpace implements Serializable {
     // }
 
 }
-

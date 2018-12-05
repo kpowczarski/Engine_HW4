@@ -28,6 +28,7 @@ public class Space_Client extends PApplet {
     public int                           anti;
     public int                           pause;
     public int                           speed;
+    public int                           shoot;
     public int                           record;
     public int                           recording;
     public int                           replayInit;
@@ -67,13 +68,14 @@ public class Space_Client extends PApplet {
         game_objects = new ArrayList<GameObject>();
         move = 0;
         anti = 0;
+        shoot = 0;
         pause = 0;
         speed = -1;
         record = 0;
         recording = 0;
         replayInit = 0;
         replay = 0;
-        backgroundColor = 51;
+        backgroundColor = 1;
     }
 
     @SuppressWarnings ( "unchecked" )
@@ -88,6 +90,7 @@ public class Space_Client extends PApplet {
             output_stream.writeInt( pause );
             output_stream.writeInt( speed );
             output_stream.writeInt( record );
+            output_stream.writeInt( shoot );
             move = 0;
             anti = 0;
             output_stream.reset();
@@ -125,7 +128,7 @@ public class Space_Client extends PApplet {
         for ( int i = 0; i < game_objects.size(); i++ ) {
             game_objects.get( i ).render( this );
         }
-        // time.render( this );
+        time.render( this );
         if ( recording == 1 ) {
             this.fill( 255 );
             this.textSize( 20 );
@@ -146,7 +149,7 @@ public class Space_Client extends PApplet {
             backgroundColor = 150;
         }
         else {
-            backgroundColor = 51;
+            backgroundColor = 1;
             speed = -1;
         }
         // output_stream.writeInt( id );
@@ -192,7 +195,7 @@ public class Space_Client extends PApplet {
             move = 2;
         }
         else if ( key == ' ' ) {
-            move = 3;
+            shoot = 1;
         }
         else if ( key == 'p' ) {
             pause = 1;
@@ -243,7 +246,7 @@ public class Space_Client extends PApplet {
             anti = 2;
         }
         if ( key == ' ' ) {
-            anti = 3;
+            shoot = 0;
         }
     }
 

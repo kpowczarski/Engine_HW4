@@ -7,15 +7,10 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import main.Server;
-import objects.Deathzone;
 import objects.Event;
 import objects.Events;
 import objects.GameObject;
-import objects.Ground;
 import objects.ObjectInputStreamId;
-import objects.Platform;
-import objects.Player;
 import objects.Timeline;
 import processing.core.PApplet;
 
@@ -56,7 +51,7 @@ public class Space_Server extends PApplet implements Runnable {
                 final Socket s = ss.accept();
                 System.out.println( "New connection Established" );
                 synchronized ( this ) {
-                    final Player newPlayer = new Player( 32, 32, 255, 0, 0 );
+                    final SpacePlayer newPlayer = new SpacePlayer( 64, 16, 255, 0, 0 );
                     Event spawnE = new Event( Events.SPAWN, newPlayer, time.getCurrentTime() );
                     eventM.addEvent( spawnE );
                     output_streams.add( new ObjectOutputStream( s.getOutputStream() ) );
@@ -74,29 +69,7 @@ public class Space_Server extends PApplet implements Runnable {
 
     public static void main ( final String[] args ) {
         PApplet.main( "space_game.Space_Server" );
-        final Ground g = new Ground();
-        final Platform plat1 = new Platform( true, 30, 800, 100, 32, 255, 255, 0 );
-        plat1.setMovingSettings( 800, 100, 0, 0, 2, 0 );
-        final Platform plat2 = new Platform( true, 1000, 800, 100, 32, 126, 243, 233 );
-        plat2.setMovingSettings( 850, 100, 0, 0, 3, 0 );
-        final Platform plat3 = new Platform( false, 200, 600, 100, 32, 23, 43, 244 );
-        Platform plat4 = new Platform( true, 155, 800, 100, 32, 126, 34, 122 );
-        plat4.setMovingSettings( 0, 0, 550, 150, 0, 2 );
-        final Platform plat5 = new Platform( false, 650, 800, 100, 32, 23, 43, 10 );
-        final Platform plat6 = new Platform( false, 850, 800, 100, 32, 223, 43, 10 );
-        Platform plat7 = new Platform( true, 850, 110, 100, 32, 236, 34, 222 );
-        plat7.setMovingSettings( 0, 0, 870, 250, 0, 2 );
-        Deathzone d = new Deathzone( 300, 962, 1100, 10 );
         game_objects = new ArrayList<GameObject>();
-        game_objects.add( g );
-        game_objects.add( plat1 );
-        game_objects.add( plat2 );
-        game_objects.add( plat3 );
-        game_objects.add( plat4 );
-        game_objects.add( plat5 );
-        game_objects.add( plat6 );
-        game_objects.add( plat7 );
-        game_objects.add( d );
         eventM = new EventManagerSpace( game_objects );
         time = new Timeline( 10 );
         pause = new ArrayList<String>();
@@ -113,6 +86,7 @@ public class Space_Server extends PApplet implements Runnable {
         final Space_Server server = new Space_Server();
         ( new Thread( server ) ).start();
         long currentT1 = time.getCurrentTime();
+        long shootTime = time.getCurrentTime() + 50;
         while ( true ) {
             synchronized ( server ) {
                 int index = 0;
@@ -123,6 +97,7 @@ public class Space_Server extends PApplet implements Runnable {
                         int temppause = din.readInt();
                         int speed = din.readInt();
                         int record = din.readInt();
+                        int shoot = din.readInt();
                         if ( record == 1 && !eventM.recording ) {
                             recordA = index;
                             Event r = new Event( Events.RECORD, time.getCurrentTime() );
@@ -141,9 +116,9 @@ public class Space_Server extends PApplet implements Runnable {
                         }
                         if ( speed == 2 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
-                                if ( Server.replayInit == 1 ) {
-                                    Server.replayInit = 0;
-                                    Server.eventM.startReplay();
+                                if ( Space_Server.replayInit == 1 ) {
+                                    Space_Server.replayInit = 0;
+                                    Space_Server.eventM.startReplay();
                                     pausedInit = false;
                                     time.unpause();
                                     time.doubleTime();
@@ -157,9 +132,9 @@ public class Space_Server extends PApplet implements Runnable {
                         }
                         if ( speed == 0 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
-                                if ( Server.replayInit == 1 ) {
-                                    Server.replayInit = 0;
-                                    Server.eventM.startReplay();
+                                if ( Space_Server.replayInit == 1 ) {
+                                    Space_Server.replayInit = 0;
+                                    Space_Server.eventM.startReplay();
                                     pausedInit = false;
                                     time.unpause();
                                     time.halfTime();
@@ -173,9 +148,9 @@ public class Space_Server extends PApplet implements Runnable {
                         }
                         if ( speed == 1 && recordA == index ) {
                             if ( eventM.replay || replayInit == 1 ) {
-                                if ( Server.replayInit == 1 ) {
-                                    Server.replayInit = 0;
-                                    Server.eventM.startReplay();
+                                if ( Space_Server.replayInit == 1 ) {
+                                    Space_Server.replayInit = 0;
+                                    Space_Server.eventM.startReplay();
                                     pausedInit = false;
                                     time.unpause();
                                     time.normalTime();
@@ -193,6 +168,12 @@ public class Space_Server extends PApplet implements Runnable {
                                     // game_objects.get( i ).handleMovement( f,
                                     // anti
                                     // );
+                                    if ( shoot == 1 && time.getCurrentTime() > shootTime ) {
+                                        shootTime = time.getCurrentTime() + 50;
+                                        Event r = new Event( Events.SHOOT, game_objects.get( i ),
+                                                time.getCurrentTime() );
+                                        eventM.addEvent( r );
+                                    }
                                     Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
                                             time.getCurrentTime() );
                                     eventM.addEvent( eMove );

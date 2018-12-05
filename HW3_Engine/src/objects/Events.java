@@ -12,7 +12,9 @@ public enum Events {
 
     SPAWN ( 4 ),
 
-    STOPRECORD ( 5 )
+    STOPRECORD ( 5 ),
+
+    SHOOT ( 6 )
 
     ;
 
