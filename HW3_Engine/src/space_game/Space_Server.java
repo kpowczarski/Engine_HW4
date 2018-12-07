@@ -176,6 +176,9 @@ public class Space_Server extends PApplet implements Runnable {
                                         ScriptManager.bindArgument( "player", game_objects.get( i ) );
                                         ScriptManager.executeScript();
                                     }
+                                	Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
+                                            time.getCurrentTime() );
+                                    eventM.addEvent( eMove );
                                     if ( shoot == 1 && time.getCurrentTime() > shootTime && gameover != 1) {
                                         shootTime = time.getCurrentTime() + 50;
                                         Event r = new Event( Events.SHOOT, game_objects.get( i ),
@@ -189,9 +192,7 @@ public class Space_Server extends PApplet implements Runnable {
                                     	shootTime = time.getCurrentTime() + 50;
                                     	//time.unpause();
                                     }
-                                    Event eMove = new Event( Events.MOVEMENT, game_objects.get( i ), f, anti,
-                                            time.getCurrentTime() );
-                                    eventM.addEvent( eMove );
+                                    
                                 }
                             }
                         }
