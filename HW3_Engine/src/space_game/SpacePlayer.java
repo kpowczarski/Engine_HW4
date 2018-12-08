@@ -22,6 +22,10 @@ public class SpacePlayer extends GameObject {
         spawnlist = new ArrayList<Spawnpoint>();
         Spawnpoint s1 = new Spawnpoint( 10, 838 );
         spawnlist.add( s1 );
+        Spawnpoint s2 = new Spawnpoint( 110, 838 );
+        spawnlist.add( s2 );
+        Spawnpoint s3 = new Spawnpoint( 210, 838 );
+        spawnlist.add(s3);
         this.velx = 0;
         this.vely = 0;
         this.r = r;
@@ -87,7 +91,7 @@ public class SpacePlayer extends GameObject {
 
     public void handleDeathEvent ( boolean d, int x, int y ) {
         if ( d ) {
-            Spawnpoint s = spawnlist.get( 0 );
+            Spawnpoint s = spawnlist.get( GUID % 3 );
             this.rect.x = s.x;
             this.rect.y = s.y;
         }
@@ -98,7 +102,7 @@ public class SpacePlayer extends GameObject {
     }
 
     public void handleSpawnEvent () {
-        Spawnpoint s = spawnlist.get( 0 );
+        Spawnpoint s = spawnlist.get(GUID % 3 );
         this.rect.x = s.x;
         this.rect.y = s.y;
     }
